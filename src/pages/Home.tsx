@@ -1,10 +1,17 @@
 import { ArrowRight, Building2, HardHat, Home as HomeIcon } from 'lucide-react';
+import SEO from '../components/SEO';
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const navigate = useNavigate();
   return (
     <div className="w-full">
+      <SEO
+        title="RAMS Construct Ltd | Built on Quality &amp; Reliability"
+        description="From domestic building construction and housing projects to paving, pavement works, and patch repairs, we deliver quality workmanship across the UK."
+        keywords="domestic building, concrete repairs, pavement works, Rams Construct Ltd, UK home developments, Coventry construction, structural integrity"
+        path="/"
+      />
       {/* Hero */}
       <section className="relative w-full min-h-[85vh] flex items-center mb-24 overflow-hidden">
         <div className="absolute inset-0 z-0">

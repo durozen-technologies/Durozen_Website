@@ -1,9 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function PrivacyPolicy() {
     const navigate = useNavigate();
     return (
         <div className="w-full max-w-4xl mx-auto px-6 py-24">
+            <SEO
+                title="Privacy Policy | RAMS Construct Ltd"
+                description="Read our Privacy Policy detailing how we handle, protect, and use your personal information at RAMS Construct."
+                path="/privacy"
+            />
             <button onClick={() => navigate('/')} className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-10 flex items-center gap-2 hover:text-secondary transition-colors">
                 ← Back to Home
             </button>

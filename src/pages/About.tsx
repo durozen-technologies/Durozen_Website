@@ -1,8 +1,14 @@
 import { CheckCircle2, Construction, Key } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function About() {
   return (
     <div className="w-full">
+      <SEO
+        title="About Us | RAMS Construct Ltd"
+        description="RAMS Construct provides trusted construction and infrastructure services with a commitment to quality, safety, and reliability."
+        path="/about"
+      />
       <section className="bg-black pt-24 pb-16 relative overflow-hidden border-b border-outline">
 
         {/* Background Animation Marquee */}

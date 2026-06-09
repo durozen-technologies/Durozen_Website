@@ -1,6 +1,7 @@
 import { Building2, Clock, Mail, MapPin, Phone, SendHorizontal } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import SEO from '../components/SEO';
 
 // Note: Make sure VITE_GOOGLE_SCRIPT_URL is defined in your .env file
 const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim();
@@ -64,6 +65,11 @@ export default function Contact() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 pt-12 pb-24">
+      <SEO
+        title="Contact Us | RAMS Construct Ltd"
+        description="Connect with our team to discuss your next architectural or domestic building project. Get a free quote today."
+        path="/contact"
+      />
       <div className="mb-10">
         <h1 className="font-serif text-5xl font-bold text-primary mb-6">Contact Us</h1>
         <p className="text-lg text-text-muted max-w-2xl leading-relaxed">

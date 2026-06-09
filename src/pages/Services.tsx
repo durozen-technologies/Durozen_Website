@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import SEO from '../components/SEO';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -47,6 +48,11 @@ export default function Services() {
 
   return (
     <div className="w-full">
+      <SEO
+        title="Our Services | RAMS Construct Ltd"
+        description="Explore our construction, pavement, repair, and housing development services delivered with precision and expertise."
+        path="/services"
+      />
       <section className="relative w-full min-h-[70vh] flex items-center justify-center mb-2 overflow-hidden pt-10 pb-10">
         {slides.map((slide, index) => (
           <div
