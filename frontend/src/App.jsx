@@ -1,15 +1,22 @@
 import { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Advantage from './components/Advantage'
+import CaseStudies from './components/CaseStudies'
+import CompanyOverview from './components/CompanyOverview'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 import Hero from './components/Hero'
-import Industries from './components/Industries'
 import Navbar from './components/Navbar'
+import PageEnhancements from './components/PageEnhancements'
 import ProcessSection from './components/ProcessSection'
 import Services from './components/Services'
+import SolutionsSection from './components/SolutionsSection'
+import TechnologyStack from './components/TechnologyStack'
+import LegalPage from './pages/LegalPage'
+// import Testimonials from './components/Testimonials'
 import './App.css'
 
-function App() {
+function HomePage() {
   useEffect(() => {
     const reveal = () => {
       const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right')
@@ -35,15 +42,31 @@ function App() {
 
   return (
     <div className="overflow-x-hidden bg-surface-main text-on-surface font-body-md">
+      <PageEnhancements />
       <Navbar />
       <Hero />
+      <CompanyOverview />
       <Services />
-      <Industries />
-      <Advantage />
+      <SolutionsSection />
+      <TechnologyStack />
       <ProcessSection />
+      <Advantage />
+      <CaseStudies />
+      {/* <Testimonials /> */}
       <ContactSection />
       <Footer />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/legal" element={<LegalPage />} />
+      </Routes>
+    </Router>
   )
 }
 

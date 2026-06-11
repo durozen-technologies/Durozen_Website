@@ -1,27 +1,87 @@
+import { Link } from 'react-router-dom'
+import DurozenLogo from '../assets/Durozen.png'
+
+const columns = [
+  {
+    title: 'Company',
+    links: [
+      ['About', '#about'],
+      ['Case Studies', '#case-studies'],
+      ['Contact', '#contact'],
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      ['Custom Software', '#services'],
+      ['Cloud Engineering', '#services'],
+      ['AI Solutions', '#services'],
+      ['Product Development', '#services'],
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      ['Process', '#process'],
+      ['Technologies', '#technologies'],
+      ['Solutions', '#solutions'],
+      // ['Testimonials', '#testimonials'],
+    ],
+  },
+  {
+    title: 'Contact',
+    links: [
+      ['info@durozen.in', 'mailto:info@durozen.in'],
+      ['+(91) 81223 39694', 'tel:+918122339694'],
+      ['Namakkal, Tamil Nadu', '#contact'],
+      ['Book Consultation', '#contact'],
+      ['LinkedIn', 'https://www.linkedin.com/company/durozen-technologies/'],
+      ['Instagram', 'https://www.instagram.com/durozen_technologies/'],
+    ],
+  },
+]
+
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50">
-      <div className="site-container flex flex-col items-center justify-between gap-8 py-12 md:flex-row">
-        <div className="reveal flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <img
-              alt="Durozen logo"
-              className="h-6"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4HAUSM4ZKAjYmeX4-O3mXPtEi9rZKgWGf_NSMULKb88krHPvyJYUrT7G3gmWIX9jZ1TCqkADgDXVrkumsfqeF3X8Ot6VSF9PDbG4cdA1vIzkaBIAPv9_GKEkuCU4tiCRZGWRVjqaVJ3B5bVHVB36RYaDwu2eG2F1Buo4juXhsVSg1krBmBqQmUPhSyxQR1IyStRPMvBWQSlP_P1j4T7YSUOHqCsRN6JbY7mjnbeBAf4ZI3Yl2oOHPsreSSMJdtoFgtUrgxPnboYk"
-            />
-            <span className="font-h3 text-lg font-bold text-slate-900">Durozen</span>
+    <footer className="border-t border-slate-800 bg-slate-950 text-white">
+      <div className="site-container py-14">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_1.9fr]">
+          <div className="reveal">
+            <div className="mb-5 flex items-center gap-3">
+              <img
+                alt="Durozen logo"
+                className="h-9 w-auto"
+                src={DurozenLogo}
+              />
+              <span className="font-h3 text-xl font-bold">Durozen</span>
+            </div>
+            <p className="max-w-sm text-body-sm text-slate-400">
+              Premium IT services and enterprise software delivery for businesses building scalable digital platforms.
+            </p>
           </div>
-          <p className="max-w-xs font-label-sm text-label-sm uppercase tracking-tight text-slate-500">
-            Copyright 2025 Durozen. All rights reserved.
-          </p>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {columns.map((column) => (
+              <div key={column.title} className="reveal">
+                <h3 className="mb-4 font-h3 text-base">{column.title}</h3>
+                <div className="grid gap-3">
+                  {column.links.map(([label, href]) => (
+                    <a key={label} className="text-body-sm text-slate-400 transition-colors hover:text-white" href={href} rel={href.startsWith('http') ? 'noreferrer' : undefined} target={href.startsWith('http') ? '_blank' : undefined}>
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="reveal flex flex-wrap justify-center gap-x-12 gap-y-4 text-sm text-slate-500 font-label-md">
-          <a className="underline transition-all duration-200 hover:text-slate-900" href="#services">Services</a>
-          <a className="underline transition-all duration-200 hover:text-slate-900" href="#industries">Industries</a>
-          <a className="underline transition-all duration-200 hover:text-slate-900" href="#contact">Contact</a>
-          <a className="underline transition-all duration-200 hover:text-slate-900" href="#">LinkedIn</a>
-          <a className="underline transition-all duration-200 hover:text-slate-900" href="#">Privacy Policy</a>
+        <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/10 pt-6 text-body-sm text-slate-400 md:flex-row">
+          <p>Copyright 2026 Durozen. All rights reserved.</p>
+          <div className="flex flex-wrap gap-5">
+            <Link className="hover:text-white" to="/legal">Privacy Policy</Link>
+            <Link className="hover:text-white" to="/legal">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>

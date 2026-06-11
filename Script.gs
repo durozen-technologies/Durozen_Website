@@ -20,7 +20,7 @@ function initializeSheet() {
   }
   
   // Add headers
-  const headers = ["Timestamp", "Name", "Phone", "Email", "Industry", "Service Interest", "Goals", "Status"];
+  const headers = ["Timestamp", "Name", "Company", "Phone", "Email", "Project Type", "Service Interest", "Message", "Status"];
   
   // Clear existing content and add headers
   sheet.clearContents();
@@ -36,12 +36,13 @@ function initializeSheet() {
   // Set column widths
   sheet.setColumnWidth(1, 150); // Timestamp
   sheet.setColumnWidth(2, 150); // Name
-  sheet.setColumnWidth(3, 130); // Phone
-  sheet.setColumnWidth(4, 200); // Email
-  sheet.setColumnWidth(5, 150); // Industry
-  sheet.setColumnWidth(6, 180); // Service Interest
-  sheet.setColumnWidth(7, 300); // Goals
-  sheet.setColumnWidth(8, 100); // Status
+  sheet.setColumnWidth(3, 160); // Company
+  sheet.setColumnWidth(4, 130); // Phone
+  sheet.setColumnWidth(5, 200); // Email
+  sheet.setColumnWidth(6, 170); // Project Type
+  sheet.setColumnWidth(7, 220); // Service Interest
+  sheet.setColumnWidth(8, 320); // Message
+  sheet.setColumnWidth(9, 100); // Status
   
   // Freeze header row
   sheet.setFrozenRows(1);
@@ -74,14 +75,18 @@ function doPost(e) {
     
     // Prepare data row
     const timestamp = new Date();
+    const projectType = params.projectType || params.industry || "";
+    const company = params.company || "";
+    const message = params.goals || params.message || "";
     const dataRow = [
       timestamp.toLocaleString(),
       params.name || "",
+      company,
       params.phone || "",
       params.email || "",
-      params.industry || "",
+      projectType,
       params.serviceInterest || "",
-      params.goals || "",
+      message,
       "New"
     ];
     
@@ -92,7 +97,7 @@ function doPost(e) {
     sendCustomerEmail(params.name, params.email);
     
     // Send notification to admin
-    sendAdminEmail(params.name, params.email, params.phone, params.industry, params.serviceInterest);
+    sendAdminEmail(params.name, params.email, params.phone, company, projectType, params.serviceInterest, message);
     
     return ContentService
       .createTextOutput(JSON.stringify({ 
@@ -178,7 +183,7 @@ function sendCustomerEmail(name, email) {
 /**
  * Send notification email to admin
  */
-function sendAdminEmail(name, email, phone, industry, serviceInterest) {
+function sendAdminEmail(name, email, phone, company, projectType, serviceInterest, message) {
   const subject = `🚨 ALERT: New Lead Submission - ${name} (${serviceInterest})`;
   const submissionTime = new Date().toLocaleString();
   const htmlBody = `
@@ -205,12 +210,16 @@ function sendAdminEmail(name, email, phone, industry, serviceInterest) {
                 <td style="padding: 12px 15px; background-color: #f3f4f6; border: 1px solid #e5e7eb;"><a href="mailto:${email}" style="color: #667eea; text-decoration: none; font-weight: 500;">${email}</a></td>
               </tr>
               <tr>
+                <td style="padding: 12px 15px; background-color: #fff; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">Company:</td>
+                <td style="padding: 12px 15px; background-color: #fff; border: 1px solid #e5e7eb; color: #333; font-weight: 500;">${company || 'Not provided'}</td>
+              </tr>
+              <tr>
                 <td style="padding: 12px 15px; background-color: #fff; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">📞 Phone:</td>
                 <td style="padding: 12px 15px; background-color: #fff; border: 1px solid #e5e7eb;"><a href="tel:${phone}" style="color: #667eea; text-decoration: none; font-weight: 500;">${phone || 'Not provided'}</a></td>
               </tr>
               <tr>
-                <td style="padding: 12px 15px; background-color: #f3f4f6; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">🏭 Industry:</td>
-                <td style="padding: 12px 15px; background-color: #f3f4f6; border: 1px solid #e5e7eb; color: #333; font-weight: 500;">${industry || 'Not specified'}</td>
+                <td style="padding: 12px 15px; background-color: #f3f4f6; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">Project Type:</td>
+                <td style="padding: 12px 15px; background-color: #f3f4f6; border: 1px solid #e5e7eb; color: #333; font-weight: 500;">${projectType || 'Not specified'}</td>
               </tr>
               <tr>
                 <td style="padding: 12px 15px; background-color: #fff; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">💼 Service Interest:</td>
@@ -219,6 +228,10 @@ function sendAdminEmail(name, email, phone, industry, serviceInterest) {
               <tr>
                 <td style="padding: 12px 15px; background-color: #f3f4f6; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">⏰ Submission Time:</td>
                 <td style="padding: 12px 15px; background-color: #f3f4f6; border: 1px solid #e5e7eb; color: #333;">${submissionTime}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 15px; background-color: #fff; font-weight: bold; border: 1px solid #e5e7eb; color: #1f2937;">Message:</td>
+                <td style="padding: 12px 15px; background-color: #fff; border: 1px solid #e5e7eb; color: #333;">${message || 'Not provided'}</td>
               </tr>
             </table>
           </div>
@@ -274,10 +287,11 @@ function testSubmission() {
   const testData = {
     parameter: {
       name: "Test User",
+      company: "Demo Company",
       phone: "+1 234 567 890",
       email: "test@example.com",
-      industry: "Manufacturing",
-      serviceInterest: "Digital Marketing",
+      projectType: "Custom Software Development",
+      serviceInterest: "Custom Software Development",
       goals: "Test submission"
     }
   };
