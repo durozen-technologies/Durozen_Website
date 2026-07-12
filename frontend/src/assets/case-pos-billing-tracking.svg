@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">POS billing and tracking system interface</title>
+  <desc id="desc">A premium dashboard-style mockup for POS billing, invoice tracking, and retail operations.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="48%" stop-color="#081C3A"/>
+      <stop offset="100%" stop-color="#0E7490"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="28" stdDeviation="30" flood-color="#020617" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  <circle cx="250" cy="168" r="260" fill="#2563EB" opacity="0.14"/>
+  <circle cx="1180" cy="710" r="300" fill="#06B6D4" opacity="0.16"/>
+
+  <g filter="url(#shadow)">
+    <rect x="110" y="92" width="1220" height="716" rx="36" fill="#F8FAFC"/>
+    <rect x="110" y="92" width="260" height="716" rx="36" fill="#081C3A"/>
+    <rect x="310" y="92" width="60" height="716" fill="#081C3A"/>
+    <text x="164" y="162" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="900">Durozen POS</text>
+    <text x="164" y="202" fill="#A5F3FC" font-family="Inter, Arial, sans-serif" font-size="17">Billing and tracking</text>
+
+    <rect x="164" y="278" width="156" height="48" rx="14" fill="#123B73"/>
+    <text x="192" y="309" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Dashboard</text>
+    <rect x="164" y="350" width="156" height="48" rx="14" fill="#0B2A57"/>
+    <text x="192" y="381" fill="#CFFAFE" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Invoices</text>
+    <rect x="164" y="422" width="156" height="48" rx="14" fill="#0B2A57"/>
+    <text x="192" y="453" fill="#CFFAFE" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Stock</text>
+    <rect x="164" y="494" width="156" height="48" rx="14" fill="#0B2A57"/>
+    <text x="192" y="525" fill="#CFFAFE" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Tracking</text>
+
+    <text x="430" y="166" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900">POS Billing System and Tracking</text>
+    <text x="430" y="204" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="18">Transactions, receipts, stock movement, and daily retail visibility.</text>
+
+    <rect x="430" y="258" width="230" height="136" rx="24" fill="#EFF6FF"/>
+    <text x="466" y="312" fill="#2563EB" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="900">₹48.2K</text>
+    <text x="466" y="352" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="17">Today sales</text>
+
+    <rect x="690" y="258" width="230" height="136" rx="24" fill="#ECFEFF"/>
+    <text x="726" y="312" fill="#0891B2" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="900">186</text>
+    <text x="726" y="352" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="17">Bills generated</text>
+
+    <rect x="950" y="258" width="300" height="136" rx="24" fill="#F0FDF4"/>
+    <text x="986" y="312" fill="#16A34A" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="900">99.8%</text>
+    <text x="986" y="352" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="17">Tracking accuracy</text>
+
+    <rect x="430" y="448" width="500" height="282" rx="28" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="468" y="504" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="900">Recent bills</text>
+    <g font-family="Inter, Arial, sans-serif" font-size="17">
+      <rect x="468" y="540" width="424" height="42" rx="12" fill="#F8FAFC"/>
+      <text x="492" y="567" fill="#334155">INV-2048</text>
+      <text x="784" y="567" fill="#2563EB" font-weight="800">Paid</text>
+      <rect x="468" y="602" width="424" height="42" rx="12" fill="#F8FAFC"/>
+      <text x="492" y="629" fill="#334155">INV-2049</text>
+      <text x="764" y="629" fill="#0891B2" font-weight="800">Packed</text>
+      <rect x="468" y="664" width="424" height="42" rx="12" fill="#F8FAFC"/>
+      <text x="492" y="691" fill="#334155">INV-2050</text>
+      <text x="766" y="691" fill="#16A34A" font-weight="800">Ready</text>
+    </g>
+
+    <rect x="970" y="448" width="280" height="282" rx="28" fill="#081C3A"/>
+    <text x="1008" y="506" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="900">Tracking</text>
+    <path d="M1022 626 C1064 552 1124 690 1198 568" fill="none" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="1022" cy="626" r="14" fill="#06B6D4"/>
+    <circle cx="1110" cy="626" r="14" fill="#2563EB"/>
+    <circle cx="1198" cy="568" r="14" fill="#10B981"/>
+    <text x="1008" y="688" fill="#A5F3FC" font-family="Inter, Arial, sans-serif" font-size="17">Billing to dispatch visibility</text>
+  </g>
+</svg>

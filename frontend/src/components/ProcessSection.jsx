@@ -1,55 +1,43 @@
 const steps = [
-  {
-    number: '01',
-    title: 'Discovery Call',
-    text: 'We understand your business goals, challenges, and current digital footprint.',
-    delay: '100ms',
-  },
-  {
-    number: '02',
-    title: 'Custom Strategy',
-    text: 'A bespoke roadmap tailored to your specific industry and growth objectives.',
-    delay: '200ms',
-  },
-  {
-    number: '03',
-    title: 'Execution and Launch',
-    text: 'Our specialists build your systems and launch your digital campaigns.',
-    delay: '300ms',
-  },
-  {
-    number: '04',
-    title: 'Optimize and Scale',
-    text: 'Continuous monitoring and optimization to drive compounding growth.',
-    delay: '400ms',
-  },
+  ['01', 'Discovery', 'Understand goals, users, systems, risks, and business priorities.'],
+  ['02', 'Strategy', 'Define product direction, delivery model, architecture, and success metrics.'],
+  ['03', 'Planning', 'Break the roadmap into milestones, sprints, dependencies, and launch scope.'],
+  ['04', 'Design', 'Create UX flows, interface systems, prototypes, and validation paths.'],
+  ['05', 'Development', 'Engineer frontend, backend, APIs, cloud infrastructure, and integrations.'],
+  ['06', 'Testing', 'Validate functionality, performance, security, accessibility, and release readiness.'],
+  ['07', 'Deployment', 'Launch through stable release pipelines, monitoring, and rollback planning.'],
+  ['08', 'Monitoring', 'Track system health, user behavior, incidents, and operational metrics.'],
+  ['09', 'Continuous Improvement', 'Iterate features, optimize workflows, and scale the platform over time.'],
 ]
 
 function ProcessSection() {
   return (
-    <section className="bg-white py-24" id="process">
+    <section className="bg-primary py-24 text-white" id="process">
       <div className="site-container">
-        <div className="reveal mb-20 text-center">
-          <h2 className="font-h2 text-h2 text-on-surface">Our Simple 4-Step Process</h2>
+        <div className="reveal mb-16 max-w-4xl">
+          <span className="mb-4 inline-flex rounded-lg bg-white/10 px-3 py-2 font-label-sm text-label-sm uppercase text-cyan-100">
+            Development Process
+          </span>
+          <h2 className="mb-5 font-h2 text-h2">A disciplined delivery timeline from idea to continuous improvement.</h2>
+          <p className="max-w-3xl font-body-lg text-body-lg text-slate-300">
+            Our process keeps stakeholders aligned, risks visible, and engineering execution focused from discovery through long-term product evolution.
+          </p>
         </div>
 
-        <div className="relative grid gap-8 md:grid-cols-4">
-          <div className="absolute left-0 top-1/2 -z-10 hidden h-0.5 w-full -translate-y-12 bg-border-subtle md:block" />
-
-          {steps.map((step) => (
-            <div
-              key={step.number}
-              className="reveal relative rounded-xl border border-border-subtle bg-white p-6"
-              style={{ transitionDelay: step.delay }}
+        <div className="timeline-grid relative grid gap-5 md:grid-cols-3">
+          {steps.map(([number, title, text], index) => (
+            <article
+              key={number}
+              className="timeline-card reveal relative rounded-lg border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all hover:-translate-y-1 hover:bg-white/20"
+              style={{ transitionDelay: `${index * 55}ms` }}
             >
-              <div className="absolute -top-8 left-6 font-h1 text-h1 text-surface-container-highest opacity-30">
-                {step.number}
+              <div className="mb-6 flex items-center justify-between">
+                <span className="font-h3 text-3xl text-cyan-200">{number}</span>
+                <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.9)]" />
               </div>
-              <div className="pt-8">
-                <h4 className="mb-2 font-h3 text-lg">{step.title}</h4>
-                <p className="text-body-sm text-secondary">{step.text}</p>
-              </div>
-            </div>
+              <h3 className="mb-3 font-h3 text-xl">{title}</h3>
+              <p className="text-body-sm text-slate-300">{text}</p>
+            </article>
           ))}
         </div>
       </div>

@@ -1,40 +1,55 @@
+import { useEffect, useState } from 'react'
 import DurozenLogo from '../assets/Durozen.png'
 
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'Services', href: '#services' },
+  { label: 'Solutions', href: '#solutions' },
+  { label: 'Technologies', href: '#technologies' },
+  { label: 'About', href: '#about' },
+  { label: 'Case Studies', href: '#case-studies' },
+  { label: 'Contact', href: '#contact' },
+]
+
 function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 16)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur-md">
-      <div className="site-container flex w-full items-center justify-between py-4">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <img
-              alt="Durozen logo"
-              className="h-12 w-auto"
-              src={DurozenLogo}
-            />
-            <span
-              className="text-2xl font-semibold tracking-tight text-slate-900"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
-              Durozen
-            </span>
-          </div>
+    <nav className={`fixed top-0 z-50 w-full border-b transition-all duration-300 ${isScrolled ? 'border-slate-200 bg-white/95 shadow-sm backdrop-blur-xl' : 'border-white/10 bg-white/80 backdrop-blur-md'}`}>
+      <div className="site-container flex w-full items-center justify-between py-3">
+        <a className="flex items-center gap-3" href="#home" aria-label="Durozen home">
+          <img
+            alt="Durozen logo"
+            className="h-10 w-auto"
+            src={DurozenLogo}
+          />
+          <span className="text-xl font-bold text-slate-950">Durozen</span>
+        </a>
 
-          <div className="hidden items-center gap-8 text-base font-semibold tracking-tight md:flex font-label-md">
-            <a className="text-slate-600 transition-colors hover:text-slate-900" href="#services">Services</a>
-            <a className="text-slate-600 transition-colors hover:text-slate-900" href="#industries">Industries</a>
-            <a className="text-slate-600 transition-colors hover:text-slate-900" href="#process">Process</a>
-            <a className="text-slate-600 transition-colors hover:text-slate-900" href="#about">About</a>
-          </div>
+        <div className="hidden items-center gap-6 text-sm font-semibold lg:flex font-label-md">
+          {navLinks.map((link) => (
+            <a key={link.href} className="text-slate-600 transition-colors hover:text-primary" href={link.href}>
+              {link.label}
+            </a>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <button className="hidden text-base font-semibold text-slate-600 hover:text-slate-900 md:block font-label-md" type="button">
-            Explore Services
-          </button>
-          <a className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-on-primary transition-all hover:opacity-90 font-label-md" href="#contact">
-            Talk to Us
-          </a>
-        </div>
+        <a className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md font-label-md" href="#contact">
+          Book a Consultation
+        </a>
       </div>
     </nav>
   )
