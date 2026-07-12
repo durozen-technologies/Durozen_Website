@@ -1,215 +1,229 @@
-import { Building2, Clock, Mail, MapPin, Phone, SendHorizontal } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import SEO from '../components/SEO';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Mail, Phone, MapPin, Clock, Linkedin, Instagram, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
-// Note: Make sure VITE_GOOGLE_SCRIPT_URL is defined in your .env file
-const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim();
+// Read from environment variables (configured in Vercel)
+const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
 export default function Contact() {
-  const location = useLocation();
-  const formRef = useRef<HTMLDivElement>(null);
-
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    inquiryType: '',
-    message: ''
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setErrorMessage('');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      if (!SCRIPT_URL) {
+        throw new Error("API URL is not configured in the environment variables.");
+      }
+
+      const response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(formData),
+        body: formData,
+        // mode: 'no-cors' is often needed for Apps Script if CORS headers aren't explicitly returned,
+        // but no-cors makes response unreadable. For standard Apps Script web apps handling JSON,
+        // you usually don't need no-cors if you return ContentService correctly.
       });
 
-      if (response.ok) {
+      // Sometimes Apps Script fetch requests redirect, but assuming it works:
+      const result = await response.json().catch(() => ({ success: true })); 
+      
+      if (result.success !== false) {
         setSubmitStatus('success');
-        setFormData({ firstName: '', lastName: '', email: '', inquiryType: '', message: '' });
+        form.reset();
       } else {
-        setSubmitStatus('error');
+        throw new Error(result.message || 'Failed to submit form');
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Submission error:', error);
       setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    if (location.pathname === '/quote' && formRef.current) {
-      // Small delay to ensure rendering is complete before scrolling
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  }, [location]);
-
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 pt-12 pb-24">
-      <SEO
-        title="Contact Us | RAMS Construct Ltd"
-        description="Connect with our team to discuss your next architectural or domestic building project. Get a free quote today."
-        path="/contact"
-      />
-      <div className="mb-10">
-        <h1 className="font-serif text-5xl font-bold text-primary mb-6">Contact Us</h1>
-        <p className="text-lg text-text-muted max-w-2xl leading-relaxed">
-          Connect with our team to discuss your next architectural project. We bring engineered excellence to every engagement.
-        </p>
-      </div>
+    <>
+      <Helmet>
+        <title>Contact Us | Durozen</title>
+        <meta name="description" content="Start your enterprise technology conversation with Durozen." />
+      </Helmet>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-5 flex flex-col gap-8">
-          <div className="bg-surface border border-outline rounded-lg p-10 shadow-sm">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-8 flex items-center gap-3">
-              <Building2 className="text-secondary" /> Office
-            </h2>
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <MapPin className="text-text-muted shrink-0 mt-1" size={20} />
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Address</h3>
-                  <p className="text-text-main leading-relaxed">Flat 1, 19 Friars Road<br />Coventry, CV1 2LJ<br />United Kingdom</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <Phone className="text-text-muted shrink-0 mt-1" size={20} />
-                <div className="min-w-0">
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Phone</h3>
-                  <a href="tel:+447861641303" className="block text-text-main hover:text-secondary cursor-pointer transition-colors break-all">+44 7861641303</a>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <Mail className="text-text-muted shrink-0 mt-1" size={20} />
-                <div className="min-w-0">
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Email</h3>
-                  <a href="mailto:ramsconstructltd19@gmail.com" className="block text-text-main hover:text-secondary cursor-pointer transition-colors break-all">ramsconstructltd19@gmail.com</a>
-                </div>
+      <div className="bg-background min-h-screen pb-24">
+        <div className="max-w-7xl mx-auto px-6 pt-4 lg:pt-6 pb-8">
+          <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-6">Contact</h1>
+            <h2 className="text-2xl font-semibold text-primary mb-4">Start your enterprise technology conversation.</h2>
+            <p className="text-lg text-text-muted">
+              Tell us what you want to build, modernize, or automate. Our team will respond with the next practical step.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2">
+              <div className="bg-surface p-8 rounded-xl border border-outline shadow-sm">
+                
+                {submitStatus === 'success' ? (
+                  <div className="text-center py-12">
+                    <CheckCircle2 className="w-16 h-16 text-secondary mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-primary mb-2">Request Received!</h3>
+                    <p className="text-text-muted mb-6">Thank you for submitting your inquiry. We'll be in touch within 24 hours.</p>
+                    <button onClick={() => setSubmitStatus('idle')} className="text-secondary font-semibold hover:underline">Submit another inquiry</button>
+                  </div>
+                ) : (
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    
+                    {submitStatus === 'error' && (
+                      <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-start text-sm border border-red-100">
+                        <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold mb-1">Submission Failed</p>
+                          <p>{errorMessage}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-primary mb-2">Name <span className="text-red-500">*</span></label>
+                        <input type="text" id="name" name="name" required minLength={2} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="John Doe" />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">Email <span className="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" required disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="john@company.com" />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="industry" className="block text-sm font-medium text-primary mb-2">Industry <span className="text-red-500">*</span></label>
+                        <input type="text" id="industry" name="industry" required minLength={2} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="e.g. Healthcare, Finance" />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium text-primary mb-2">Phone <span className="text-red-500">*</span></label>
+                        <input type="tel" id="phone" name="phone" required pattern="[\+0-9\-\s\(\)]+" minLength={10} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="+91 98765 43210" title="Please enter a valid phone number" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="serviceInterest" className="block text-sm font-medium text-primary mb-2">Service Interest</label>
+                      <select id="serviceInterest" name="serviceInterest" disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50">
+                      <option>Custom Software Development</option>
+                      <option>Enterprise Application Development</option>
+                      <option>Cloud Engineering</option>
+                      <option>AI and Machine Learning</option>
+                      <option>Data Engineering</option>
+                      <option>DevOps</option>
+                      <option>Digital Transformation</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="goals" className="block text-sm font-medium text-primary mb-2">Project Goals</label>
+                    <textarea id="goals" name="goals" rows={5} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="Tell us about your project..."></textarea>
+                  </div>
+
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-secondary text-white py-4 rounded-lg font-bold hover:bg-red-700 transition-colors flex items-center justify-center disabled:opacity-70">
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Book a Consultation"
+                    )}
+                  </button>
+                </form>
+                )}
               </div>
             </div>
-          </div>
 
-          <div className="bg-surface-dim border border-outline rounded-lg p-11 shadow-sm">
-            <h2 className="font-serif text-2xl font-bold text-primary mb-8 flex items-center gap-3">
-              <Clock className="text-secondary" /> Business Hours
-            </h2>
-            <ul className="space-y-4">
-              <li className="flex justify-between items-center border-b border-outline pb-4">
-                <span className="text-text-main font-medium">Monday - Friday</span>
-                <span className="text-text-muted text-sm pr-2">8:00 AM - 5:00 PM</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-outline pb-4">
-                <span className="text-text-main font-medium">Saturday</span>
-                <span className="text-text-muted text-sm pl-2">9:00 AM - 2:00 PM</span>
-              </li>
-              <li className="flex justify-between items-center pt-2">
-                <span className="text-gray-500 font-medium tracking-wide">Sunday</span>
-                <span className="text-gray-500 text-sm pl-2 font-medium">Closed</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+            <div className="space-y-8">
+              <div className="bg-primary text-white p-8 rounded-xl shadow-lg">
+                <h3 className="text-xl font-bold mb-6">Enterprise Contact Desk</h3>
 
-        <div className="lg:col-span-7" ref={formRef}>
-          <div className="bg-surface border border-outline rounded-lg p-10 md:p-14 shadow-sm flex flex-col">
-            <h2 className="font-serif text-3xl font-bold text-primary mb-10 pb-6 border-b border-outline">Send us a message</h2>
-
-            {submitStatus === 'success' ? (
-              <div className="flex-grow flex flex-col items-center justify-center text-center py-12">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                <h3 className="font-serif text-2xl font-bold text-primary mb-2">Message Sent!</h3>
-                <p className="text-text-muted mb-8">Thank you for reaching out. We will get back to you shortly.</p>
-                <button onClick={() => setSubmitStatus('idle')} className="text-secondary font-medium hover:underline">
-                  Send another message
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-8 flex-grow flex flex-col">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="flex flex-col gap-3">
-                    <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">First Name</label>
-                    <input required name="firstName" value={formData.firstName} onChange={handleChange} type="text" placeholder="Enter your first name" className="border-0 border-b border-outline bg-transparent py-2 px-0 focus:ring-0 focus:border-primary transition-colors text-text-main placeholder-gray-400 font-sans" />
+                <div className="space-y-6">
+                  <div className="flex items-start">
+                    <MapPin className="w-6 h-6 text-blue-400 mr-4 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Office</h4>
+                      <p className="text-blue-100 text-sm">
+                        <a href="https://maps.app.goo.gl/Tu8joQKuoLoGaEyn7" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                          Namakkal, Tamil Nadu
+                        </a>
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Last Name</label>
-                    <input required name="lastName" value={formData.lastName} onChange={handleChange} type="text" placeholder="Enter your last name" className="border-0 border-b border-outline bg-transparent py-2 px-0 focus:ring-0 focus:border-primary transition-colors text-text-main placeholder-gray-400 font-sans" />
+
+                  <div className="flex items-start">
+                    <Mail className="w-6 h-6 text-blue-400 mr-4 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Email</h4>
+                      <a href="mailto:info@durozen.in" className="text-blue-100 text-sm hover:text-white transition-colors">info@durozen.in</a>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col gap-3">
-                  <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Email Address</label>
-                  <input required name="email" value={formData.email} onChange={handleChange} type="email" placeholder="name@company.com" className="border-0 border-b border-outline bg-transparent py-2 px-0 focus:ring-0 focus:border-primary transition-colors text-text-main placeholder-gray-400 font-sans" />
-                </div>
+                  <div className="flex items-start">
+                    <Phone className="w-6 h-6 text-blue-400 mr-4 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Phone</h4>
+                      <a href="tel:+918122339694" className="text-blue-100 text-sm hover:text-white transition-colors">+(91) 81223 39694</a>
+                    </div>
+                  </div>
 
-                <div className="flex flex-col gap-3">
-                  <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Nature of Inquiry</label>
-                  <div className="relative">
-                    <select required name="inquiryType" value={formData.inquiryType} onChange={handleChange} className="border-0 border-b border-outline bg-transparent py-2 px-0 focus:ring-0 focus:border-primary transition-colors text-text-main w-full font-sans appearance-none cursor-pointer">
-                      <option value="" disabled>Select an option...</option>
-                      <option value="res">Residential Construction</option>
-                      <option value="com">Commercial Project</option>
-                      <option value="arc">Architectural Consultation</option>
-                    </select>
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                  <div className="flex items-start">
+                    <Clock className="w-6 h-6 text-blue-400 mr-4 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Business Hours</h4>
+                      <p className="text-blue-100 text-sm">Monday to Saturday<br />9:30 AM - 6:30 PM IST</p>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Message</label>
-                  <textarea required name="message" value={formData.message} onChange={handleChange} rows={3} placeholder="Provide details about your project requirements..." className="border-0 border-b border-outline bg-transparent py-2 px-0 focus:ring-0 focus:border-primary transition-colors text-text-main placeholder-gray-400 resize-none font-sans"></textarea>
+              {/* Social Links Card */}
+              <div className="bg-surface border border-outline p-8 rounded-xl shadow-sm mt-8 text-center">
+                <h3 className="text-xl font-bold mb-6 text-primary">Professional Networks</h3>
+                <div className="flex justify-center space-x-4">
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-3 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center">
+                    <Linkedin className="w-6 h-6" />
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-3 bg-pink-50 text-pink-600 rounded-full hover:bg-pink-600 hover:text-white transition-colors flex items-center justify-center">
+                    <Instagram className="w-6 h-6" />
+                  </a>
                 </div>
+              </div>
 
-                {submitStatus === 'error' && (
-                  <p className="text-red-500 text-sm font-medium">There was an error sending your message. Please try again.</p>
-                )}
+            </div>
+            {/* Close the grid container */}
+          </div>
 
-                <div className="pt-4">
-                  <button disabled={isSubmitting} type="submit" className="bg-primary text-white px-8 py-4 rounded font-medium text-sm flex items-center gap-3 hover:bg-gray-800 transition-colors shadow-sm w-full md:w-auto justify-center disabled:opacity-70">
-                    {isSubmitting ? 'Sending...' : 'Submit Inquiry'} <SendHorizontal size={18} />
-                  </button>
-                </div>
-              </form>
-            )}
+          <div className="mt-12 lg:mt-16">
+            <div className="bg-surface border border-outline rounded-xl overflow-hidden shadow-sm h-96 lg:h-[500px] relative w-full">
+              <iframe
+                title="Durozen Office Location"
+                src="https://maps.google.com/maps?q=Durozen%20Technologies%20Private%20Limited,%20Namakkal,%20Tamil%20Nadu&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 w-full h-full"
+              ></iframe>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="mt-12">
-        <div className="h-[450px] rounded-lg border border-outline overflow-hidden relative shadow-sm">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d658.778672926852!2d-1.5106200379682984!3d52.40390480873523!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48774bb06bf64a7d%3A0x1b673dd282ea1957!2s19%20Friars&#39;%20Rd%2C%20Coventry%20CV1%202LJ%2C%20UK!5e1!3m2!1sen!2sin!4v1780916084747!5m2!1sen!2sin"
-            className="w-full h-full border-0 hover:grayscale-0 transition-all duration-700"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

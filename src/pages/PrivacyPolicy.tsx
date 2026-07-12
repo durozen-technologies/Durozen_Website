@@ -4,10 +4,10 @@ import SEO from '../components/SEO';
 export default function PrivacyPolicy() {
     const navigate = useNavigate();
     return (
-        <div className="w-full max-w-4xl mx-auto px-6 py-24">
+        <div className="w-full max-w-4xl mx-auto px-6 pt-4 lg:pt-6 pb-24">
             <SEO
-                title="Privacy Policy | RAMS Construct Ltd"
-                description="Read our Privacy Policy detailing how we handle, protect, and use your personal information at RAMS Construct."
+                title="Privacy Policy | Durozen"
+                description="Read our Privacy Policy detailing how we handle, protect, and use your personal information at Durozen."
                 path="/privacy"
             />
             <button onClick={() => navigate('/')} className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-10 flex items-center gap-2 hover:text-secondary transition-colors">
@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
 
             <div className="prose max-w-none space-y-10 text-text-muted leading-relaxed">
                 <p className="text-base text-text-main">
-                    RAMS Construct Ltd ("we", "our", or "us") is committed to protecting your privacy and handling your personal information responsibly.
+                    Durozen ("we", "our", or "us") is committed to protecting your privacy and handling your personal information responsibly.
                 </p>
 
                 <section>
@@ -73,9 +73,9 @@ export default function PrivacyPolicy() {
 
                 <section className="bg-surface border border-outline rounded-lg p-6">
                     <h2 className="font-serif text-2xl font-bold text-primary mb-4">Contact Us</h2>
-                    <p className="text-sm mb-2 font-semibold text-text-main">RAMS Construct Ltd</p>
-                    <p className="text-sm mb-4">Email: <a href="mailto:ramsconstructltd19@gmail.com" className="text-secondary hover:underline">ramsconstructltd19@gmail.com</a></p>
-                    <p className="text-sm text-text-muted">If you have any concerns about how your information is handled, you may contact the UK Information Commissioner's Office (ICO).</p>
+                    <p className="text-sm mb-2 font-semibold text-text-main">Durozen</p>
+                    <p className="text-sm mb-4">Email: <a href="mailto:info@durozen.in" className="text-secondary hover:underline">info@durozen.in</a></p>
+                    <p className="text-sm text-text-muted">If you have any concerns about how your information is handled, you may contact the relevant data protection authority.</p>
                 </section>
             </div>
         </div>

@@ -5,12 +5,16 @@
   --font-serif: "Montserrat", sans-serif;
   --font-sans: "Inter", sans-serif;
   
-  --color-primary: #0f172a;
-  --color-secondary: #ff6b00;
-  --color-background: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-surface-dim: #f3f4f5;
+  --color-primary: #303f9f;
+  --color-secondary: #d32f2f;
+  --color-brand-green: #689f38;
+  --color-brand-yellow: #fbc02d;
+  
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-dim: #eef1f4;
   --color-outline: #e2e8f0;
+  
   --color-text-main: #191c1d;
   --color-text-muted: #45464d;
 }

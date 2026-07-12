@@ -4,10 +4,10 @@ import SEO from '../components/SEO';
 export default function CookiePolicy() {
     const navigate = useNavigate();
     return (
-        <div className="w-full max-w-4xl mx-auto px-6 py-24">
+        <div className="w-full max-w-4xl mx-auto px-6 pt-4 lg:pt-6 pb-24">
             <SEO
-                title="Cookie Policy | RAMS Construct Ltd"
-                description="Information on how RAMS Construct Ltd uses cookies to ensure the best possible experience on our website."
+                title="Cookie Policy | Durozen"
+                description="Information on how Durozen uses cookies to ensure the best possible experience on our website."
                 path="/cookies"
             />
             <button onClick={() => navigate('/')} className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-10 flex items-center gap-2 hover:text-secondary transition-colors">

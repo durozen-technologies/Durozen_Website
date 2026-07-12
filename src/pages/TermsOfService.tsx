@@ -4,10 +4,10 @@ import SEO from '../components/SEO';
 export default function TermsOfService() {
     const navigate = useNavigate();
     return (
-        <div className="w-full max-w-4xl mx-auto px-6 py-24">
+        <div className="w-full max-w-4xl mx-auto px-6 pt-4 lg:pt-6 pb-24">
             <SEO
-                title="Terms of Service | RAMS Construct Ltd"
-                description="Terms and conditions for using the RAMS Construct Ltd website and our services."
+                title="Terms of Service | Durozen"
+                description="Terms and conditions for using the Durozen website and our services."
                 path="/terms"
             />
             <button onClick={() => navigate('/')} className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-10 flex items-center gap-2 hover:text-secondary transition-colors">
@@ -32,23 +32,23 @@ export default function TermsOfService() {
 
                 <section>
                     <h2 className="font-serif text-2xl font-bold text-primary mb-4">Accuracy of Information</h2>
-                    <p className="text-sm">While we strive to keep information accurate and up to date, RAMS Construct Ltd makes no warranties regarding completeness or accuracy.</p>
+                    <p className="text-sm">While we strive to keep information accurate and up to date, Durozen makes no warranties regarding completeness or accuracy.</p>
                 </section>
 
                 <section>
                     <h2 className="font-serif text-2xl font-bold text-primary mb-4">Intellectual Property</h2>
-                    <p className="text-sm">All website content, including text, images, logos, and graphics, is the property of RAMS Construct Ltd unless otherwise stated.</p>
+                    <p className="text-sm">All website content, including text, images, logos, and graphics, is the property of Durozen unless otherwise stated.</p>
                 </section>
 
                 <section>
                     <h2 className="font-serif text-2xl font-bold text-primary mb-4">Limitation of Liability</h2>
-                    <p className="text-sm">RAMS Construct Ltd shall not be liable for any direct or indirect damages arising from the use of this website.</p>
+                    <p className="text-sm">Durozen shall not be liable for any direct or indirect damages arising from the use of this website.</p>
                 </section>
 
                 <section className="bg-surface border border-outline rounded-lg p-6">
                     <h2 className="font-serif text-2xl font-bold text-primary mb-4">Contact</h2>
-                    <p className="text-sm mb-2">For enquiries regarding these terms, please contact us at:</p>
-                    <a href="mailto:ramsconstructltd19@gmail.com" className="text-secondary text-sm hover:underline">ramsconstructltd19@gmail.com</a>
+                    <p className="text-sm font-semibold text-text-main mb-2">Durozen</p>
+                    <a href="mailto:info@durozen.in" className="text-secondary text-sm hover:underline">info@durozen.in</a>
                 </section>
             </div>
         </div>
