@@ -265,3 +265,24 @@
 **[19:37:34] Save App Script URL to .env**
 - **Request:** Create a `.env` file and store the generated App Script Web App URL.
 - **Action:** Created a local `.env` file at the root of the project and stored the URL under the `VITE_GOOGLE_SCRIPT_URL` variable to enable local testing of the contact form.
+
+**[09:36:49] Update Form Placeholders**
+- **Request:** Change placeholders for the Name and Email fields in the contact form.
+- **Action:** Updated `Contact.tsx` placeholders: Name changed from "John Doe" to "Name", and Email changed from "john@company.com" to "mail@company.com".
+
+**[09:55:11] Add Career Application Form**
+- **Request:** Create an application form on the Careers page similar to the contact form.
+- **Action:** Replaced the general contact prompt in `Careers.tsx` with a fully structured application form (Name, Email, Phone, Role, Portfolio, Cover Letter) with loading states and success/error handling. It uses a `VITE_CAREERS_SCRIPT_URL` environment variable placeholder to be configured with an Apps Script later.
+
+**[11:11:57] Update Google Apps Script for Multiple Forms**
+- **Request:** Update the backend script to auto-create separate tables for Contact and Careers.
+- **Action:** 
+  - Completely rewrote `scripts/contact-form-backend.gs`.
+  - The script now dynamically checks a `formType` parameter from incoming requests.
+  - If `formType === 'career'`, it creates/appends to a "Career Applications" sheet and sends a career-specific admin email.
+  - If `formType === 'contact'` (default), it creates/appends to a "Contact Leads" sheet and sends contact-specific customer/admin emails.
+  - Updated both `Contact.tsx` and `Careers.tsx` to include hidden `formType` inputs and point to the same `VITE_GOOGLE_SCRIPT_URL`.
+
+**[11:42:11] Remove Emojis from Email Templates**
+- **Request:** Make the emails look more professional and fix Mojibake (broken characters) in the email client.
+- **Action:** Removed all emojis from the four email templates (`sendCustomerEmail`, `sendApplicantEmail`, `sendAdminEmail`, `sendAdminCareerEmail`) inside `scripts/contact-form-backend.gs`.

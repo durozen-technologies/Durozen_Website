@@ -80,6 +80,7 @@ export default function Contact() {
                   </div>
                 ) : (
                   <form className="space-y-6" onSubmit={handleSubmit}>
+                    <input type="hidden" name="formType" value="contact" />
                     
                     {submitStatus === 'error' && (
                       <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-start text-sm border border-red-100">
@@ -94,11 +95,11 @@ export default function Contact() {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-primary mb-2">Name <span className="text-red-500">*</span></label>
-                        <input type="text" id="name" name="name" required minLength={2} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="John Doe" />
+                        <input type="text" id="name" name="name" required minLength={2} disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="Name" />
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">Email <span className="text-red-500">*</span></label>
-                        <input type="email" id="email" name="email" required disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="john@company.com" />
+                        <input type="email" id="email" name="email" required disabled={isSubmitting} className="w-full px-4 py-3 bg-background border border-outline rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors disabled:opacity-50" placeholder="mail@company.com" />
                       </div>
                     </div>
 
