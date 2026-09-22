@@ -380,3 +380,8 @@
 
 - **Request:** push these code into main branch.
 - **Action:** Merged `dev` branch into `main` and pushed to `origin/main`.
+
+### [2026-09-22 16:03:42] Add vercel.json
+
+- **Request:** Fix 404 NOT_FOUND error on Vercel after Vite to Next.js migration.
+- **Action:** Created `vercel.json` with `"framework": "nextjs"` to force Vercel to recognize the project as a Next.js app and serve the correct output directory.
