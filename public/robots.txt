@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://durozen.in/sitemap.xml
+Sitemap: https://www.durozen.in/sitemap.xml
