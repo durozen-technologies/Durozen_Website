@@ -375,3 +375,8 @@
 
 - **Request:** Delete the old frontend-old reactjs code.
 - **Action:** Deleted the `frontend-old` directory.
+
+### [2026-09-22 15:53:23] Merge Dev into Main
+
+- **Request:** push these code into main branch.
+- **Action:** Merged `dev` branch into `main` and pushed to `origin/main`.
