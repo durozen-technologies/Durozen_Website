@@ -1,6 +1,7 @@
 # Durozen Website Coding Rules
 
 ## Frontend (React / Vite)
+
 - Write all components in TypeScript (`.tsx`).
 - Use Tailwind CSS for all styling and ensure a professional, enterprise-grade aesthetic.
 - Follow functional component patterns with React Hooks.

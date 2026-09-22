@@ -1,11 +1,11 @@
 // Configuration
-const CONTACT_SHEET_NAME = "Contact Leads";
-const CAREER_SHEET_NAME = "Career Applications";
-const EMAIL_FROM = "info@durozen.in"; // Update this
-const ADMIN_EMAIL = "info@durozen.in"; // Update this
+const CONTACT_SHEET_NAME = 'Contact Leads';
+const CAREER_SHEET_NAME = 'Career Applications';
+const EMAIL_FROM = 'info@durozen.in'; // Update this
+const ADMIN_EMAIL = 'info@durozen.in'; // Update this
 
 // Spreadsheet ID - Get this from your sheet URL
-const SPREADSHEET_ID = "1zA1qFZH-WgwiW3Zffm0MTkoGFLVN1gzHy3he4mSeQJ8";
+const SPREADSHEET_ID = '1zA1qFZH-WgwiW3Zffm0MTkoGFLVN1gzHy3he4mSeQJ8';
 
 /**
  * Initialize the sheet with headers if it doesn't exist
@@ -13,7 +13,7 @@ const SPREADSHEET_ID = "1zA1qFZH-WgwiW3Zffm0MTkoGFLVN1gzHy3he4mSeQJ8";
 function initializeSheet(sheetName, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(sheetName);
-  
+
   // Create sheet if it doesn't exist
   if (!sheet) {
     sheet = ss.insertSheet(sheetName);
@@ -21,22 +21,22 @@ function initializeSheet(sheetName, headers) {
     // Already exists
     return sheet;
   }
-  
+
   // Clear existing content and add headers
   sheet.clearContents();
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  
+
   // Format header row
   const headerRange = sheet.getRange(1, 1, 1, headers.length);
-  headerRange.setBackground("#1f2937");
-  headerRange.setFontColor("#ffffff");
-  headerRange.setFontWeight("bold");
+  headerRange.setBackground('#1f2937');
+  headerRange.setFontColor('#ffffff');
+  headerRange.setFontWeight('bold');
   headerRange.setFontSize(11);
-  
+
   // Freeze header row
   sheet.setFrozenRows(1);
-  
-  Logger.log(sheetName + " initialized successfully!");
+
+  Logger.log(sheetName + ' initialized successfully!');
   return sheet;
 }
 
@@ -45,13 +45,33 @@ function initializeSheet(sheetName, headers) {
  * (Select 'setupAllSheets' in the dropdown and click 'Run')
  */
 function setupAllSheets() {
-  const contactHeaders = ["Timestamp", "Name", "Phone", "Email", "Industry", "Service Interest", "Goals", "Status"];
+  const contactHeaders = [
+    'Timestamp',
+    'Name',
+    'Phone',
+    'Email',
+    'Industry',
+    'Service Interest',
+    'Goals',
+    'Status',
+  ];
   initializeSheet(CONTACT_SHEET_NAME, contactHeaders);
-  
-  const careerHeaders = ["Timestamp", "Name", "Email", "Phone", "Role", "Portfolio", "Message", "Status"];
+
+  const careerHeaders = [
+    'Timestamp',
+    'Name',
+    'Email',
+    'Phone',
+    'Role',
+    'Portfolio',
+    'Message',
+    'Status',
+  ];
   initializeSheet(CAREER_SHEET_NAME, careerHeaders);
-  
-  Logger.log("Both tables (Contact Leads & Career Applications) have been created successfully!");
+
+  Logger.log(
+    'Both tables (Contact Leads & Career Applications) have been created successfully!',
+  );
 }
 
 /**
@@ -61,80 +81,112 @@ function doPost(e) {
   try {
     const params = e.parameter;
     const formType = params.formType || 'contact'; // default to contact
-    
+
     // Validate required fields
     if (!params.name || !params.email) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ success: false, message: "Name and Email are required" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          success: false,
+          message: 'Name and Email are required',
+        }),
+      ).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const timestamp = new Date().toLocaleString();
     let dataRow = [];
-    
+
     if (formType === 'career') {
-      const headers = ["Timestamp", "Name", "Email", "Phone", "Role", "Portfolio", "Message", "Status"];
+      const headers = [
+        'Timestamp',
+        'Name',
+        'Email',
+        'Phone',
+        'Role',
+        'Portfolio',
+        'Message',
+        'Status',
+      ];
       const sheet = initializeSheet(CAREER_SHEET_NAME, headers);
-      
+
       dataRow = [
         timestamp,
-        params.name || "",
-        params.email || "",
-        params.phone || "",
-        params.role || "",
-        params.portfolio || "",
-        params.message || "",
-        "New"
+        params.name || '',
+        params.email || '',
+        params.phone || '',
+        params.role || '',
+        params.portfolio || '',
+        params.message || '',
+        'New',
       ];
-      
+
       sheet.appendRow(dataRow);
-      
+
       // Notify Admin
-      sendAdminCareerEmail(params.name, params.email, params.phone, params.role, params.portfolio, params.message);
-      
+      sendAdminCareerEmail(
+        params.name,
+        params.email,
+        params.phone,
+        params.role,
+        params.portfolio,
+        params.message,
+      );
+
       // Notify Applicant
       sendApplicantEmail(params.name, params.email);
-      
     } else {
       // Default Contact Form
-      const headers = ["Timestamp", "Name", "Phone", "Email", "Industry", "Service Interest", "Goals", "Status"];
+      const headers = [
+        'Timestamp',
+        'Name',
+        'Phone',
+        'Email',
+        'Industry',
+        'Service Interest',
+        'Goals',
+        'Status',
+      ];
       const sheet = initializeSheet(CONTACT_SHEET_NAME, headers);
-      
+
       dataRow = [
         timestamp,
-        params.name || "",
-        params.phone || "",
-        params.email || "",
-        params.industry || "",
-        params.serviceInterest || "",
-        params.goals || "",
-        "New"
+        params.name || '',
+        params.phone || '',
+        params.email || '',
+        params.industry || '',
+        params.serviceInterest || '',
+        params.goals || '',
+        'New',
       ];
-      
+
       sheet.appendRow(dataRow);
-      
+
       // Notify Customer
       sendCustomerEmail(params.name, params.email);
-      
+
       // Notify Admin
-      sendAdminEmail(params.name, params.email, params.phone, params.industry, params.serviceInterest);
+      sendAdminEmail(
+        params.name,
+        params.email,
+        params.phone,
+        params.industry,
+        params.serviceInterest,
+      );
     }
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ 
-        success: true, 
-        message: "Thank you! We received your submission." 
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-    
+
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        success: true,
+        message: 'Thank you! We received your submission.',
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
-    Logger.log("Error: " + error.toString());
-    return ContentService
-      .createTextOutput(JSON.stringify({ 
-        success: false, 
-        message: "An error occurred: " + error.toString() 
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
+    Logger.log('Error: ' + error.toString());
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        success: false,
+        message: 'An error occurred: ' + error.toString(),
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -190,14 +242,14 @@ function sendCustomerEmail(name, email) {
       </body>
     </html>
   `;
-  
+
   try {
-    GmailApp.sendEmail(email, subject, "", { 
-      htmlBody: htmlBody
+    GmailApp.sendEmail(email, subject, '', {
+      htmlBody: htmlBody,
     });
-    Logger.log("Customer email sent to: " + email);
+    Logger.log('Customer email sent to: ' + email);
   } catch (error) {
-    Logger.log("Error sending customer email: " + error.toString());
+    Logger.log('Error sending customer email: ' + error.toString());
   }
 }
 
@@ -205,7 +257,7 @@ function sendCustomerEmail(name, email) {
  * Send confirmation email to applicant (Careers Form)
  */
 function sendApplicantEmail(name, email) {
-  const subject = "Application Received - Durozen Careers";
+  const subject = 'Application Received - Durozen Careers';
   const htmlBody = `
     <html>
       <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6;">
@@ -232,11 +284,11 @@ function sendApplicantEmail(name, email) {
       </body>
     </html>
   `;
-  
+
   try {
-    GmailApp.sendEmail(email, subject, "", { htmlBody: htmlBody });
+    GmailApp.sendEmail(email, subject, '', { htmlBody: htmlBody });
   } catch (error) {
-    Logger.log("Error sending applicant email: " + error.toString());
+    Logger.log('Error sending applicant email: ' + error.toString());
   }
 }
 
@@ -268,11 +320,11 @@ function sendAdminEmail(name, email, phone, industry, serviceInterest) {
       </body>
     </html>
   `;
-  
+
   try {
-    GmailApp.sendEmail(ADMIN_EMAIL, subject, "", { htmlBody: htmlBody });
+    GmailApp.sendEmail(ADMIN_EMAIL, subject, '', { htmlBody: htmlBody });
   } catch (error) {
-    Logger.log("Error sending admin email: " + error.toString());
+    Logger.log('Error sending admin email: ' + error.toString());
   }
 }
 
@@ -306,10 +358,10 @@ function sendAdminCareerEmail(name, email, phone, role, portfolio, message) {
       </body>
     </html>
   `;
-  
+
   try {
-    GmailApp.sendEmail(ADMIN_EMAIL, subject, "", { htmlBody: htmlBody });
+    GmailApp.sendEmail(ADMIN_EMAIL, subject, '', { htmlBody: htmlBody });
   } catch (error) {
-    Logger.log("Error sending admin career email: " + error.toString());
+    Logger.log('Error sending admin career email: ' + error.toString());
   }
 }
