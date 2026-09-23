@@ -385,3 +385,42 @@
 
 - **Request:** Fix 404 NOT_FOUND error on Vercel after Vite to Next.js migration.
 - **Action:** Created `vercel.json` with `"framework": "nextjs"` to force Vercel to recognize the project as a Next.js app and serve the correct output directory.
+
+### [2026-09-23 18:15:27] Projects Page Update
+
+- **Request:** Rename the "Case Studies" to "Client projects" and "Project work" and add the 3 specific case study links (Elavarasan, Gurudev Impex, KNP Bharathi).
+- **Action:** 
+  - Updated `Navigation.tsx` and `Footer.tsx` to link to `/projects` with the label `Client Projects & Project Work`.
+  - Replaced the `src/app/case-studies` route with `src/app/projects`.
+  - Removed the unused `src/views/CaseStudies.tsx`.
+  - Edited `src/views/Projects.tsx` to split the display into two sections (`Client Projects` and `Project Work`) based on user clarification (POS Billing System as Project Work, the rest as Client Projects).
+
+### [2026-09-23 18:19:25] Fix Project Titles
+
+- **Request:** The project names in the case studies were overly descriptive and irrelevant, instead of actual client/project names.
+- **Action:** Updated the `title` attributes in `src/views/Projects.tsx` for all 6 projects to reflect their actual names (e.g., "KNCET Admission Portal", "Elavarasan & Co Chits", "Gurudev Impex").
+
+### [2026-09-23 18:20:47] Remove Project Metrics
+
+- **Request:** Remove the quantitative metrics (e.g., "2,800+ Active Community", "99.4% Fee Collection") from the project cards.
+- **Action:** Removed the metrics grid block entirely from the `src/views/Projects.tsx` template, cleaning up the UI to only show the project details and tags.
+
+### [2026-09-23 18:25:08] Add Website Screenshots to Cards
+
+- **Request:** Replace the abstract visual gradients on the project cards with actual website screenshots ("first page").
+- **Action:** Wrote a Puppeteer script (`screenshot.js`) to capture 1280x960 homepage screenshots for Elavarasan Chits, Gurudev Impex, and KNP Bharathi, saving them directly to `public/images/`. Updated the `Projects.tsx` card layout to conditionally render `<Image>` components instead of the abstract "Visual Header Mock", restoring a much more tangible, visual portfolio style.
+
+### [2026-09-23 18:27:08] Clean Up Unused Code
+
+- **Request:** Remove the unwanted/dead code from `Projects.tsx` following the UI changes.
+- **Action:** Cleaned up the `projects` data array by entirely removing the unused `category`, `challenge`, `metrics`, `theme`, `accent`, `icon`, `status`, and `preview` properties. Removed the 8 unused Lucide icon imports.
+
+### [2026-09-23 18:28:36] Remove Unwanted Workspace Files
+
+- **Request:** Remove unwanted files in the workspace.
+- **Action:** Removed `screenshot.js` (a script created to take screenshots that is no longer needed) and `stitch_case_studies.html` (an old design artifact in the root directory).
+
+### [2026-09-23 18:34:53] Update .gitignore
+
+- **Request:** Update the `.gitignore` with much needed standard exclusions.
+- **Action:** Appended standard IDE/editor folders (`.vscode/`, `.idea/`, `*.swp`), linting cache files (`.eslintcache`), and general log files (`*.log`) to `.gitignore` to keep the repository clean from local dev environment cruft.

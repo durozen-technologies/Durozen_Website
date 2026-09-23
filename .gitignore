@@ -41,5 +41,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# legacy Vite frontend kept for side-by-side comparison during migration
-/frontend-old/
+
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Linting and Caches
+.eslintcache
+.stylelintcache
+
+# Logs
+*.log

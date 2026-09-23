@@ -16,7 +16,7 @@ export default function Navigation() {
     { id: '/about', label: 'About' },
     { id: '/services', label: 'Services' },
     { id: '/solutions', label: 'Solutions' },
-    { id: '/case-studies', label: 'Case Studies' },
+    { id: '/projects', label: 'Client Projects & Project Work' },
     { id: '/careers', label: 'Careers' },
     { id: '/contact', label: 'Contact' },
   ];
