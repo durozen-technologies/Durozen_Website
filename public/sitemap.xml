@@ -4,47 +4,172 @@
 
   <url>
        <loc>https://www.durozen.in/</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>1.0000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/about</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/services</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/solutions</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/projects</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/blog</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/careers</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/contact</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/privacy</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://www.durozen.in/terms</loc>
-       <lastmod>2026-09-23T14:29:25+00:00</lastmod>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
        <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/cookies</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/custom-software-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/enterprise-application-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/web-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/mobile-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/cloud-engineering</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/devops</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/ai-and-machine-learning</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/data-engineering</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/ui-ux-design</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/product-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/api-development</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/digital-transformation</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/it-consulting</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/services/qa-and-automation</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/enterprise-resource-planning</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/customer-management-systems</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/ai-automation</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/business-intelligence</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/workflow-automation</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/saas-platforms</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/internal-business-tools</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/solutions/analytics-dashboards</loc>
+       <lastmod>2026-09-23T16:40:33+00:00</lastmod>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://www.durozen.in/blog/automate-repetitive-business-processes</loc>
+       <lastmod>2026-09-24T00:00:00+00:00</lastmod>
+       <priority>0.6400</priority>
   </url>
 </urlset>
