@@ -424,3 +424,79 @@
 
 - **Request:** Update the `.gitignore` with much needed standard exclusions.
 - **Action:** Appended standard IDE/editor folders (`.vscode/`, `.idea/`, `*.swp`), linting cache files (`.eslintcache`), and general log files (`*.log`) to `.gitignore` to keep the repository clean from local dev environment cruft.
+
+### [2026-09-23 20:14:36] Update sitemap.xml
+
+- **Request:** Update the sitemap.xml to match a specific list of URLs, Last Mod dates, and Priorities, while ensuring missing URLs (like cookies) are included.
+- **Action:** Replaced the contents of public/sitemap.xml with the requested static XML structure, including the missing https://www.durozen.in/cookies URL.
+
+### [2026-09-23 20:18:45] Add Cookie Policy Link
+
+- **Request:** Add the missing cookies link to the footer so it can be discovered by sitemap crawlers.
+- **Action:** Edited src/components/Footer.tsx to add a Cookie Policy link pointing to /cookies right next to the Privacy Policy and Terms links.
+
+### [2026-09-23 20:25:05] Create 14 Service Pages
+
+- **Request:** Create 14 individual separate pages for all 14 listed services (Custom Software Development, Enterprise Application Development, etc.) with specific meta titles, descriptions, and only an H1 tag for the UI.
+- **Action:** Wrote and executed a Node script to automatically scaffold 14 page.tsx files inside src/app/services/[slug]/. Each page is fully compliant with the Next.js App Router metadata API, including precise titles, descriptions, canonical links, and a stylized H1 tag containing the service name without any other text.
+
+### [2026-09-23 20:31:24] Upgrade 14 Service Pages
+
+- **Request:** Make the 14 service pages fully functional with images, content, and easily discoverable by sitemap generators.
+- **Action:** 
+  - Updated src/views/Services.tsx to add slugs to the 14 service cards and dynamically set the href of the "Learn More" links so they direct to the individual service pages instead of /contact. This perfectly connects the routing graph for sitemap crawlers.
+  - Rewrote the page generation script to deploy a full premium UI layout across all 14 routes.
+  - The new layout utilizes the company_building_2.jpg hero image with a darkened gradient overlay, a two-column responsive content overview, a features list built with lucide-react icons, and a prominent bottom Call To Action block linking to /contact.
+  - Escaped characters and replaced <img> with Next.js <Image> component to pass the linter.
+
+### [2026-09-23 20:37:06] Sitewide SEO Schema & Open Graph Upgrade
+
+- **Request:** Add full Open Graph titles, descriptions, canonical URLs, and JSON-LD Structured Data schemas to all pages on the site (the 14 service pages + the 10 top-level pages).
+- **Action:** 
+  - Created a centralized, reusable React component (src/components/JsonLd.tsx) to safely inject pplication/ld+json script tags.
+  - Rewrote the generation script for the 14 service pages to export strict openGraph tags (title, description, canonical url) and inject a standard Service JSON-LD schema into the page body. 
+  - Ran the script to update all 14 pages.
+  - Wrote a new Node script (scratch/patch_seo.js) that automatically parsed the 10 top-level page routes (Home, About, Contact, Projects, etc.), extracted their existing meta title and description, and injected strict openGraph tags, 	witter tags, and the correct contextual JSON-LD schema type (e.g., Organization, AboutPage, ContactPage, WebPage).
+  - Ran the script, updating all 10 root pages simultaneously.
+  - Corrected a TypeScript ny lint error in the new JsonLd component. Linter runs fully green.
+
+### [2026-09-23 21:03:46] Full SEO Content Expansion for all 14 Service Pages
+
+- **Request:** Implement a deep, 15-section SEO content structure (Hero, Overview, Inclusion, Problems, Audience, Use Cases, Process, Tech Stack, Case Studies, FAQs, etc.) across all 14 service pages, without repeating content.
+- **Action:** 
+  - Extracted the UI architecture into a master component: src/components/ServicePageTemplate.tsx.
+  - Defined strict TypeScript interfaces in src/types/service.ts.
+  - Wrote 14 distinct data files inside src/data/services/ containing unique, highly-tailored copywriting, FAQs, Tech Stacks, and Case Studies for every service (e.g., \custom-software-development.ts\, \cloud-engineering.ts\, \i-and-machine-learning.ts\, etc.).
+  - Refactored all 14 \src/app/services/[slug]/page.tsx\ files to dynamically ingest this data and export the specific \metadata\ required by Next.js App Router for Open Graph and SEO caching.
+  - Ran 
+pm run lint and resolved 0 errors. The complete engine is typed and perfectly structured.
+
+### [2026-09-23 21:28:15] Solutions SEO Content Expansion
+
+- **Request:** Create 8 independent SEO landing pages for "Solutions", structured around the business problem rather than the technical services.
+- **Action:** 
+  - Engineered a brand new SolutionPageTemplate.tsx tailored to the 15-section business-focused schema (Problem -> Solution -> Features -> Benefits -> Process -> Tech -> FAQ).
+  - Wrote 8 comprehensive data files in src/data/solutions/ covering ERP, CRMs, AI Automation, BI, Workflow Automation, SaaS Platforms, Internal Tools, and Analytics Dashboards.
+  - Dynamically mapped the routes to src/app/solutions/[slug]/page.tsx and injected full SEO JSON-LD and OpenGraph tags.
+  - Verified linter rules (0 errors).
+
+### [2026-09-23 21:38:55] Global SEO Domain Canonicalization
+
+- **Request:** Perform a complete SEO audit and shift all https://www.durozen.in URLs to https://durozen.in globally.
+- **Action:** 
+  - Wrote a Node.js script to replace www.durozen.in with durozen.in in 35 files across the src/ directory, including layouts, static pages, service pages, and solution pages.
+  - Implemented a 301 Redirect rule in 
+ext.config.ts to automatically route incoming traffic from www.durozen.in to durozen.in.
+  - Verified linter rules (0 errors).
+
+### [2026-09-23 21:55:00] Blog Engine & Content Creation
+
+- **Request:** Build a Blog section, add it to the main navigation, and write a 700-word article titled "How to Automate Repetitive Business Processes: A Practical Guide". Use proper planning protocols.
+- **Action:** 
+  - Followed /planning-and-task-breakdown to create a robust implementation plan and task list.
+  - Added "Blog" to the Navigation component.
+  - Defined the TypeScript schemas in src/types/blog.ts.
+  - Created BlogPostTemplate.tsx for structured rendering and JSON-LD BlogPosting schema injection.
+  - Built the src/app/blog/page.tsx index and src/app/blog/[slug]/page.tsx dynamic route.
+  - Authored a comprehensive 700+ word article on process automation.
+  - Generated and implemented an AI tech stock image for the article hero.

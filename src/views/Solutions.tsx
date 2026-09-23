@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   Network,
   Users,
@@ -13,48 +14,56 @@ export default function Solutions() {
   const solutions = [
     {
       title: 'Enterprise Resource Planning',
+      slug: 'enterprise-resource-planning',
       description:
         'Centralize operations, approvals, inventory, finance, and reporting in one reliable platform.',
       icon: <Network className="w-8 h-8" />,
     },
     {
       title: 'Customer Management Systems',
+      slug: 'customer-management-systems',
       description:
         'Manage leads, service workflows, customer histories, and follow-up automation with clarity.',
       icon: <Users className="w-8 h-8" />,
     },
     {
       title: 'AI Automation',
+      slug: 'ai-automation',
       description:
         'Automate repetitive tasks, support workflows, document processing, and decision assistance.',
       icon: <Zap className="w-8 h-8" />,
     },
     {
       title: 'Business Intelligence',
+      slug: 'business-intelligence',
       description:
         'Turn raw data into executive dashboards, operational insights, and performance visibility.',
       icon: <BarChart3 className="w-8 h-8" />,
     },
     {
       title: 'Workflow Automation',
+      slug: 'workflow-automation',
       description:
         'Replace manual handoffs with custom workflows, notifications, approvals, and integrations.',
       icon: <Repeat className="w-8 h-8" />,
     },
     {
       title: 'SaaS Platforms',
+      slug: 'saas-platforms',
       description:
         'Build subscription-ready products with role-based access, billing paths, and admin control.',
       icon: <Box className="w-8 h-8" />,
     },
     {
       title: 'Internal Business Tools',
+      slug: 'internal-business-tools',
       description:
         'Create fast, secure tools for operations, teams, field staff, and management decisions.',
       icon: <Wrench className="w-8 h-8" />,
     },
     {
       title: 'Analytics Dashboards',
+      slug: 'analytics-dashboards',
       description:
         'Monitor KPIs, users, revenue, campaigns, operations, and system health in real time.',
       icon: <LayoutDashboard className="w-8 h-8" />,
@@ -88,9 +97,10 @@ export default function Solutions() {
               const activeColorClass = hoverColors[index % 4];
 
               return (
-                <div
+                <Link
+                  href={`/solutions/${solution.slug}`}
                   key={index}
-                  className={`bg-surface p-8 rounded-lg shadow-sm border border-outline transition-all duration-300 flex flex-col h-full group ${activeColorClass.split(' ')[1]}`}
+                  className={`bg-surface p-8 rounded-lg shadow-sm border border-outline transition-all duration-300 flex flex-col h-full group block ${activeColorClass.split(' ')[1]}`}
                 >
                   <div
                     className={`mb-6 p-4 bg-primary/5 w-16 h-16 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform text-slate-400 ${activeColorClass.split(' ')[0]}`}
@@ -101,7 +111,7 @@ export default function Solutions() {
                     {solution.title}
                   </h3>
                   <p className="text-text-muted">{solution.description}</p>
-                </div>
+                </Link>
               );
             })}
           </div>

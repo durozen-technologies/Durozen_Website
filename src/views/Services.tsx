@@ -21,86 +21,86 @@ export default function Services() {
   const services = [
     {
       title: 'Custom Software Development',
-      description:
-        'Tailored web, mobile, and internal systems built around your operations, users, and growth model.',
+      slug: 'custom-software-development',
+      description: 'Tailored web, mobile, and internal systems built around your operations, users, and growth model.',
       icon: <Code2 className="w-8 h-8" />,
     },
     {
       title: 'Enterprise Application Development',
-      description:
-        'Secure, scalable applications for complex workflows, permissions, reporting, and integrations.',
+      slug: 'enterprise-application-development',
+      description: 'Secure, scalable applications for complex workflows, permissions, reporting, and integrations.',
       icon: <Building2 className="w-8 h-8" />,
     },
     {
       title: 'Web Development',
-      description:
-        'High-performance websites, portals, dashboards, landing pages, and web applications.',
+      slug: 'web-development',
+      description: 'High-performance websites, portals, dashboards, landing pages, and web applications.',
       icon: <Globe className="w-8 h-8" />,
     },
     {
       title: 'Mobile Development',
-      description:
-        'Launch-ready Android, iOS, and cross-platform apps with clean UX and stable backends.',
+      slug: 'mobile-development',
+      description: 'Launch-ready Android, iOS, and cross-platform apps with clean UX and stable backends.',
       icon: <Smartphone className="w-8 h-8" />,
     },
     {
       title: 'Cloud Engineering',
-      description:
-        'Cloud-native architecture, migration, deployment, scaling, security, and monitoring.',
+      slug: 'cloud-engineering',
+      description: 'Cloud-native architecture, migration, deployment, scaling, security, and monitoring.',
       icon: <Cloud className="w-8 h-8" />,
     },
     {
       title: 'DevOps',
-      description:
-        'CI/CD pipelines, release automation, infrastructure workflows, and reliability practices.',
+      slug: 'devops',
+      description: 'CI/CD pipelines, release automation, infrastructure workflows, and reliability practices.',
       icon: <Settings className="w-8 h-8" />,
     },
     {
       title: 'AI and Machine Learning',
-      description:
-        'AI assistants, automation workflows, RAG systems, analytics, and model integrations.',
+      slug: 'ai-and-machine-learning',
+      description: 'AI assistants, automation workflows, RAG systems, analytics, and model integrations.',
       icon: <BrainCircuit className="w-8 h-8" />,
     },
     {
       title: 'Data Engineering',
-      description:
-        'Data pipelines, business intelligence layers, dashboards, warehouses, and reporting systems.',
+      slug: 'data-engineering',
+      description: 'Data pipelines, business intelligence layers, dashboards, warehouses, and reporting systems.',
       icon: <Database className="w-8 h-8" />,
     },
     {
       title: 'UI/UX Design',
-      description:
-        'Product strategy, UX flows, design systems, prototypes, and conversion-focused interfaces.',
+      slug: 'ui-ux-design',
+      description: 'Product strategy, UX flows, design systems, prototypes, and conversion-focused interfaces.',
       icon: <PenTool className="w-8 h-8" />,
     },
     {
       title: 'Product Development',
-      description:
-        'MVP planning, SaaS platforms, admin panels, portals, and continuous feature delivery.',
+      slug: 'product-development',
+      description: 'MVP planning, SaaS platforms, admin panels, portals, and continuous feature delivery.',
       icon: <Rocket className="w-8 h-8" />,
     },
     {
       title: 'API Development',
-      description:
-        'Robust APIs, third-party integrations, authentication, documentation, and versioning.',
+      slug: 'api-development',
+      description: 'Robust APIs, third-party integrations, authentication, documentation, and versioning.',
       icon: <Webhook className="w-8 h-8" />,
     },
     {
       title: 'Digital Transformation',
-      description:
-        'Modernize manual processes, legacy tools, customer touchpoints, and business workflows.',
+      slug: 'digital-transformation',
+      description: 'Modernize manual processes, legacy tools, customer touchpoints, and business workflows.',
       icon: <Share2 className="w-8 h-8" />,
     },
     {
       title: 'IT Consulting',
-      description:
-        'Technical roadmaps, audits, architecture decisions, platform planning, and delivery guidance.',
+      slug: 'it-consulting',
+      description: 'Technical roadmaps, audits, architecture decisions, platform planning, and delivery guidance.',
       icon: <Headset className="w-8 h-8" />,
     },
     {
       title: 'QA and Automation',
-      description:
-        'Manual testing, automated test coverage, release validation, and quality engineering.',
+      slug: 'qa-and-automation',
+      description: 'Manual testing, automated test coverage, release validation, and quality engineering.',
       icon: <ShieldCheck className="w-8 h-8" />,
     },
   ];
@@ -151,7 +151,7 @@ export default function Services() {
                     {service.description}
                   </p>
                   <Link
-                    href="/contact"
+                    href={`/services/${service.slug}`}
                     className={`text-sm font-semibold flex items-center transition-colors text-slate-500 ${activeColorClass.split(' ')[0]}`}
                   >
                     Learn More <ArrowRight className="ml-2 w-4 h-4" />

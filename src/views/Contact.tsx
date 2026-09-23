@@ -260,7 +260,7 @@ export default function Contact() {
             <div className="space-y-8">
               <div className="bg-primary text-white p-8 rounded-xl shadow-lg">
                 <h3 className="text-xl font-bold mb-6">
-                  Enterprise Contact Desk
+                  Contact Us
                 </h3>
 
                 <div className="space-y-6">

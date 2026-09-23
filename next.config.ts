@@ -1,5 +1,20 @@
 import type { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {/* config options here */};
-
+const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.durozen.in',
+          },
+        ],
+        destination: 'https://durozen.in/:path*',
+        permanent: true,
+      },
+    ];
+  },
+};
 export default nextConfig;
