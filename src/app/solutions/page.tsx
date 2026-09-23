@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Solutions | Durozen',
     description: 'Business platforms that solve operational problems. ERP, CRM, AI Automation, BI, and more.',
-    url: 'https://durozen.in/solutions',
+    url: 'https://www.durozen.in/solutions',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function SolutionsPage() {
   "@type": "WebPage",
   "name": "Solutions | Durozen",
   "description": "Business platforms that solve operational problems. ERP, CRM, AI Automation, BI, and more.",
-  "url": "https://durozen.in/solutions"
+  "url": "https://www.durozen.in/solutions"
 };
 
   return (

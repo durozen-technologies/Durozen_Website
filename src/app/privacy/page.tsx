@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Privacy Policy | Durozen',
     description: 'Read our Privacy Policy detailing how we handle, protect, and use your personal information at Durozen.',
-    url: 'https://durozen.in/privacy',
+    url: 'https://www.durozen.in/privacy',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
   "@type": "WebPage",
   "name": "Privacy Policy | Durozen",
   "description": "Read our Privacy Policy detailing how we handle, protect, and use your personal information at Durozen.",
-  "url": "https://durozen.in/privacy"
+  "url": "https://www.durozen.in/privacy"
 };
 
   return (

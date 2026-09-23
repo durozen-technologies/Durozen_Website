@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact Us | Durozen',
     description: 'Start your enterprise technology conversation with Durozen.',
-    url: 'https://durozen.in/contact',
+    url: 'https://www.durozen.in/contact',
     type: 'website',
   },
   twitter: {
@@ -25,7 +25,7 @@ export default function ContactPage() {
   "@type": "ContactPage",
   "name": "Contact Us | Durozen",
   "description": "Start your enterprise technology conversation with Durozen.",
-  "url": "https://durozen.in/contact"
+  "url": "https://www.durozen.in/contact"
 };
 
   return (

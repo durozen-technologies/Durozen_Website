@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cookie Policy | Durozen',
     description: 'Information on how Durozen uses cookies to ensure the best possible experience on our website.',
-    url: 'https://durozen.in/cookies',
+    url: 'https://www.durozen.in/cookies',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function CookiesPage() {
   "@type": "WebPage",
   "name": "Cookie Policy | Durozen",
   "description": "Information on how Durozen uses cookies to ensure the best possible experience on our website.",
-  "url": "https://durozen.in/cookies"
+  "url": "https://www.durozen.in/cookies"
 };
 
   return (

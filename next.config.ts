@@ -8,10 +8,10 @@ const nextConfig: NextConfig = {
         has: [
           {
             type: 'host',
-            value: 'www.durozen.in',
+            value: 'durozen.in',
           },
         ],
-        destination: 'https://durozen.in/:path*',
+        destination: 'https://www.durozen.in/:path*',
         permanent: true,
       },
     ];

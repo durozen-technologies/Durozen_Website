@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Client Projects & Project Work | Durozen',
     description: 'Selected client work and product builds by Durozen.',
-    url: 'https://durozen.in/projects',
+    url: 'https://www.durozen.in/projects',
     type: 'website',
   },
   twitter: {
@@ -25,7 +25,7 @@ export default function ProjectsPage() {
   "@type": "WebPage",
   "name": "Client Projects & Project Work | Durozen",
   "description": "Selected client work and product builds by Durozen.",
-  "url": "https://durozen.in/projects"
+  "url": "https://www.durozen.in/projects"
 };
 
   return (

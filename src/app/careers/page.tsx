@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Careers | Durozen',
     description: 'Join Durozen and help us build serious digital products for ambitious teams.',
-    url: 'https://durozen.in/careers',
+    url: 'https://www.durozen.in/careers',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function CareersPage() {
   "@type": "WebPage",
   "name": "Careers | Durozen",
   "description": "Join Durozen and help us build serious digital products for ambitious teams.",
-  "url": "https://durozen.in/careers"
+  "url": "https://www.durozen.in/careers"
 };
 
   return (

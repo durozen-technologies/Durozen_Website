@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Terms of Service | Durozen',
     description: 'Terms and conditions for using the Durozen website and our services.',
-    url: 'https://durozen.in/terms',
+    url: 'https://www.durozen.in/terms',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function TermsPage() {
   "@type": "WebPage",
   "name": "Terms of Service | Durozen",
   "description": "Terms and conditions for using the Durozen website and our services.",
-  "url": "https://durozen.in/terms"
+  "url": "https://www.durozen.in/terms"
 };
 
   return (

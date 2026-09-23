@@ -36,7 +36,7 @@ export default function SolutionPageTemplate({
     "provider": {
       "@type": "Organization",
       "name": "Durozen Technologies",
-      "url": "https://durozen.in"
+      "url": "https://www.durozen.in"
     }
   };
 

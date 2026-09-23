@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://durozen.in'),
+  metadataBase: new URL('https://www.durozen.in'),
   title: 'Durozen | Enterprise IT Services',
   description:
     'Durozen builds scalable software, cloud-native platforms, AI-powered solutions, and enterprise applications.',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: 'https://durozen.in/',
+    url: 'https://www.durozen.in/',
     siteName: 'Durozen',
     title: 'Durozen | Enterprise IT Services',
     description:

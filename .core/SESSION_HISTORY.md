@@ -500,3 +500,11 @@ ext.config.ts to automatically route incoming traffic from www.durozen.in to dur
   - Built the src/app/blog/page.tsx index and src/app/blog/[slug]/page.tsx dynamic route.
   - Authored a comprehensive 700+ word article on process automation.
   - Generated and implemented an AI tech stock image for the article hero.
+
+### [2026-09-23 22:04:00] Revert Domain Canonicalization to www
+
+- **Request:** Revert the domain canonicalization to use www.durozen.in globally instead of the naked domain.
+- **Action:** 
+  - Ran a script to replace https://durozen.in with https://www.durozen.in across 39 files in src/.
+  - Updated 
+ext.config.ts to implement a 301 redirect from durozen.in to www.durozen.in.

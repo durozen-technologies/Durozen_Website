@@ -6,11 +6,11 @@ import { automateProcessesBlog } from '@/data/blogs/automate-repetitive-business
 export const metadata: Metadata = {
   title: 'Blog | Durozen Engineering & Technology Insights',
   description: 'Read the latest insights, practical guides, and technical deep-dives from the Durozen engineering and strategy team.',
-  alternates: { canonical: 'https://durozen.in/blog' },
+  alternates: { canonical: 'https://www.durozen.in/blog' },
   openGraph: {
     title: 'Blog | Durozen Engineering & Technology Insights',
     description: 'Read the latest insights, practical guides, and technical deep-dives from the Durozen engineering and strategy team.',
-    url: 'https://durozen.in/blog',
+    url: 'https://www.durozen.in/blog',
     type: 'website',
   },
 };

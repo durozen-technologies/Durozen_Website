@@ -13,10 +13,10 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
     provider: {
       '@type': 'Organization',
       name: 'Durozen',
-      url: 'https://durozen.in/'
+      url: 'https://www.durozen.in/'
     },
     description: data.seo.description,
-    url: `https://durozen.in/services/\${data.slug}`
+    url: `https://www.durozen.in/services/\${data.slug}`
   };
 
   return (
@@ -25,7 +25,7 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
       <div className="bg-background min-h-screen text-text-main">
         
         {/* Breadcrumb */}
-        <div className="pt-24 pb-4 md:pt-32 max-w-7xl mx-auto px-6">
+        <div className="pt-8 pb-4 md:pt-12 max-w-7xl mx-auto px-6">
           <nav className="flex text-sm text-text-muted">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight className="w-4 h-4 mx-2" />
@@ -36,7 +36,7 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
         </div>
 
         {/* 1. Hero Section */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
+        <section className="relative py-12 md:py-16 overflow-hidden">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/80 to-black/40 z-10" />
             <Image

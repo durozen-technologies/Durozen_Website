@@ -13,11 +13,11 @@ export default function BlogPostTemplate({ data }: BlogPostTemplateProps) {
     '@type': 'BlogPosting',
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://durozen.in/blog/${data.slug}`,
+      '@id': `https://www.durozen.in/blog/${data.slug}`,
     },
     headline: data.seo.title,
     description: data.seo.description,
-    image: `https://durozen.in${data.heroImage}`,
+    image: `https://www.durozen.in${data.heroImage}`,
     author: {
       '@type': 'Organization',
       name: data.author,
@@ -27,7 +27,7 @@ export default function BlogPostTemplate({ data }: BlogPostTemplateProps) {
       name: 'Durozen',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://durozen.in/images/logo.png',
+        url: 'https://www.durozen.in/images/logo.png',
       },
     },
     datePublished: data.date,

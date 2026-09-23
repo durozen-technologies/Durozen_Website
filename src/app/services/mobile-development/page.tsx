@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: mobileDevelopmentData.seo.title,
     description: mobileDevelopmentData.seo.description,
-    url: `https://durozen.in/services/${mobileDevelopmentData.slug}`,
+    url: `https://www.durozen.in/services/${mobileDevelopmentData.slug}`,
     type: 'website',
   },
   twitter: {

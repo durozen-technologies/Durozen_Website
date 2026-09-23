@@ -28,17 +28,17 @@ export async function generateMetadata({
   return {
     title: `${blog.seo.title} | Durozen`,
     description: blog.seo.description,
-    alternates: { canonical: `https://durozen.in/blog/${blog.slug}` },
+    alternates: { canonical: `https://www.durozen.in/blog/${blog.slug}` },
     openGraph: {
       title: blog.seo.title,
       description: blog.seo.description,
-      url: `https://durozen.in/blog/${blog.slug}`,
+      url: `https://www.durozen.in/blog/${blog.slug}`,
       type: 'article',
       publishedTime: new Date(blog.date).toISOString(),
       authors: [blog.author],
       images: [
         {
-          url: `https://durozen.in${blog.heroImage}`,
+          url: `https://www.durozen.in${blog.heroImage}`,
           width: 1200,
           height: 630,
           alt: blog.title,
@@ -49,7 +49,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: blog.seo.title,
       description: blog.seo.description,
-      images: [`https://durozen.in${blog.heroImage}`],
+      images: [`https://www.durozen.in${blog.heroImage}`],
     },
   };
 }

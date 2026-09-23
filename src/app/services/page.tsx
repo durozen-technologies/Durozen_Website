@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Services | Durozen',
     description: 'Enterprise IT services engineered for scale. Premium delivery across software, cloud, AI, product design, data, DevOps, and digital transformation.',
-    url: 'https://durozen.in/services',
+    url: 'https://www.durozen.in/services',
     type: 'website',
   },
   twitter: {
@@ -26,7 +26,7 @@ export default function ServicesPage() {
   "@type": "WebPage",
   "name": "Services | Durozen",
   "description": "Enterprise IT services engineered for scale. Premium delivery across software, cloud, AI, product design, data, DevOps, and digital transformation.",
-  "url": "https://durozen.in/services"
+  "url": "https://www.durozen.in/services"
 };
 
   return (
