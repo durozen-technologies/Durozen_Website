@@ -33,15 +33,11 @@ export default function ConnectedNetworkAnimation() {
 
   return (
     <motion.div
-      style={
-        shouldReduceMotion
-          ? undefined
-          : {
-              rotateX,
-              rotateY,
-              transformStyle: "preserve-3d",
-            }
-      }
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="relative w-full aspect-square max-w-[260px] sm:max-w-[320px] lg:max-w-[420px] mx-auto flex items-center justify-center select-none"
@@ -166,8 +162,8 @@ export default function ConnectedNetworkAnimation() {
               shouldReduceMotion
                 ? undefined
                 : {
-                    strokeDashoffset: [164, -164],
-                  }
+                  strokeDashoffset: [164, -164],
+                }
             }
             transition={{
               duration: 5.5,
@@ -187,8 +183,8 @@ export default function ConnectedNetworkAnimation() {
               shouldReduceMotion
                 ? undefined
                 : {
-                    strokeDashoffset: [-108, 108],
-                  }
+                  strokeDashoffset: [-108, 108],
+                }
             }
             transition={{
               duration: 4.8,
