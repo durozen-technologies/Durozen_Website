@@ -20,10 +20,11 @@ const CONFIG = {
   CONTACT_SHEET_NAME: "Inquiries",
   CAREERS_SHEET_NAME: "Careers",
 
-  // Routing Email Addresses
-  ADMIN_EMAIL: "sachinn2413@gmail.com",          // General & Sales inquiries recipient
-  CAREERS_EMAIL: "sachinn2413@gmail.com",        // Careers & HR applications recipient
-  SENDER_EMAIL: "sachinn2413@gmail.com",         // Authorized sender Google account
+  // Routing Email Addresses (Alerts sent to both director and HR; sachin email removed)
+  ALERT_EMAILS: "director@durozen.in, hr@durozen.in", // Receives all inbound admin alerts (comma-separated)
+  ADMIN_EMAIL: "director@durozen.in",                 // General & Sales inquiries reply-to & support contact
+  CAREERS_EMAIL: "hr@durozen.in",                     // Careers & HR applications reply-to
+  SENDER_EMAIL: "director@durozen.in",                // Default sender identity
   
   // Organization Metadata
   COMPANY_NAME: "Durozen Technologies",
@@ -548,7 +549,7 @@ function sendContactAdminAlert(r) {
   `;
 
   MailApp.sendEmail({
-    to: CONFIG.ADMIN_EMAIL,
+    to: CONFIG.ALERT_EMAILS,
     subject: subject,
     htmlBody: htmlBody,
     name: CONFIG.COMPANY_NAME,
@@ -914,7 +915,7 @@ function sendCareerAdminAlert(r) {
   `;
 
   MailApp.sendEmail({
-    to: CONFIG.CAREERS_EMAIL,
+    to: CONFIG.ALERT_EMAILS,
     subject: subject,
     htmlBody: htmlBody,
     name: CONFIG.COMPANY_NAME,
