@@ -49,6 +49,18 @@ const CONFIG = {
 };
 
 // ============================================================================
+// ONE-CLICK PERMISSION AUTHORIZER (Run once in Editor)
+// ============================================================================
+/**
+ * Run this function once directly inside the Apps Script editor (select 'authorizeDrive' and click 'Run').
+ * This triggers Google's authorization popup to grant Google Drive storage access.
+ */
+function authorizeDrive() {
+  const root = DriveApp.getRootFolder();
+  Logger.log("DriveApp successfully authorized! Root folder: " + root.getName());
+}
+
+// ============================================================================
 // MODE A: WEB APP REST ENDPOINT (doPost & doOptions)
 // ============================================================================
 
