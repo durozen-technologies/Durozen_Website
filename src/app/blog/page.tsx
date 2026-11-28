@@ -24,6 +24,10 @@ export default function BlogPage() {
 
   const categories = [
     "All",
+    "Digital Growth & Performance",
+    "Social Media & Paid Social",
+    "Performance Marketing & PPC",
+    "Local SEO & Maps Authority",
     "Enterprise ERP & CRM",
     "Cloud & DevOps Engineering",
     "Product Design & Engineering",
@@ -45,6 +49,46 @@ export default function BlogPage() {
   ];
 
   const blogPosts: BlogPost[] = [
+    {
+      id: "best-digital-marketing-company-in-namakkal",
+      title: "Best Digital Marketing Company in Namakkal: Engineering High-ROI Lead Generation & Brand Growth",
+      summary:
+        "Why modern businesses are moving away from vanity likes and boosted posts to full-funnel technical SEO, server-side conversion tracking, custom landing pages, and WhatsApp lead automation.",
+      category: "Digital Growth & Performance",
+      readTime: "11 min read",
+      date: "November 2026",
+      accentColor: "#24419E",
+    },
+    {
+      id: "social-media-marketing-company-in-namakkal",
+      title: "Social Media Marketing Company in Namakkal: Turning Instagram, YouTube & LinkedIn into Lead Engines",
+      summary:
+        "How structured regional storytelling, high-retention short-form video hooks, Meta Lead Ads, and WhatsApp retargeting build brand authority and drive daily customer inquiries.",
+      category: "Social Media & Paid Social",
+      readTime: "10 min read",
+      date: "November 2026",
+      accentColor: "#DE2F28",
+    },
+    {
+      id: "performance-marketing-lead-generation-company-in-namakkal",
+      title: "Performance Marketing & Lead Generation Company in Namakkal: Scaling Predictable Sales Pipelines",
+      summary:
+        "How high-intent Google Search campaigns, Meta Conversions API (CAPI), A/B-tested landing pages, and instant WhatsApp lead qualification lower Cost Per Acquisition (CPA) and multiply ROAS.",
+      category: "Performance Marketing & PPC",
+      readTime: "11 min read",
+      date: "November 2026",
+      accentColor: "#F4A81E",
+    },
+    {
+      id: "local-seo-google-business-profile-company-in-namakkal",
+      title: "Local SEO & Google Business Profile Company in Namakkal: Dominating Google Maps & AI Search",
+      summary:
+        "How structured Google Business Profile optimization, local schema markup, authentic review velocity, and geo-targeted web pages put your business first in Google Maps and AI recommendations.",
+      category: "Local SEO & Maps Authority",
+      readTime: "10 min read",
+      date: "November 2026",
+      accentColor: "#549B31",
+    },
     {
       id: "custom-crm-erp-software-development-company-in-namakkal",
       title: "Custom CRM & ERP Software Development Company in Namakkal: Unifying Sales, Billing & Inventory",
