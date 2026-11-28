@@ -84,9 +84,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Convert resume File to Buffer for Nodemailer attachment
+    // Convert resume File to Buffer for Nodemailer attachment & Google Apps Script Drive upload
     const arrayBuffer = await resumeFile.arrayBuffer();
     const resumeBuffer = Buffer.from(arrayBuffer);
+    const resumeBase64 = resumeBuffer.toString("base64");
 
     // Read SMTP and recruitment credentials from environment variables securely
     const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
@@ -201,7 +202,7 @@ Format: ${fileExtension.toUpperCase()}
 </html>
 `;
 
-    // Forward to Google Apps Script webhook if configured in environment
+    // Forward to Google Apps Script webhook (Stores candidate + uploads resume to Google Drive)
     const googleScriptUrl =
       process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL ||
       process.env.GOOGLE_SCRIPT_URL;
@@ -209,7 +210,7 @@ Format: ${fileExtension.toUpperCase()}
     let googleScriptDispatched = false;
     if (googleScriptUrl && !googleScriptUrl.includes("YOUR_DEPLOYMENT_ID")) {
       try {
-        await fetch(googleScriptUrl, {
+        const gasRes = await fetch(googleScriptUrl, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
@@ -222,70 +223,77 @@ Format: ${fileExtension.toUpperCase()}
             type: "career",
             resumeName: originalName,
             resumeSize: formattedFileSize,
+            resumeMime: resumeFile.type || "application/pdf",
+            resumeBase64: resumeBase64,
           }),
         });
-        googleScriptDispatched = true;
+
+        const gasResult = await gasRes.json().catch(() => null);
+        if (gasRes.ok && (!gasResult || gasResult.status === "success" || gasResult.status === "ignored")) {
+          googleScriptDispatched = true;
+        }
       } catch (err) {
         console.warn("[Careers API] Google Apps Script forward error:", err);
       }
     }
 
-    // Check if SMTP credentials are provided for Nodemailer
+    // Optional: Also dispatch via Nodemailer if SMTP credentials are provided
+    let smtpDelivered = false;
     if (smtpUser && smtpPass) {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpSecure,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      });
-
-      await transporter.sendMail({
-        from:
-          process.env.SMTP_FROM ||
-          `"Durozen Careers" <${smtpUser}>`,
-        replyTo: email,
-        to: recruitmentEmail,
-        subject: emailSubject,
-        text: textBody,
-        html: htmlBody,
-        attachments: [
-          {
-            filename: originalName,
-            content: resumeBuffer,
-            contentType: resumeFile.type || "application/octet-stream",
+      try {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpSecure,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
           },
-        ],
-      });
+        });
 
+        await transporter.sendMail({
+          from:
+            process.env.SMTP_FROM ||
+            `"Durozen Careers" <${smtpUser}>`,
+          replyTo: email,
+          to: recruitmentEmail,
+          subject: emailSubject,
+          text: textBody,
+          html: htmlBody,
+          attachments: [
+            {
+              filename: originalName,
+              content: resumeBuffer,
+              contentType: resumeFile.type || "application/octet-stream",
+            },
+          ],
+        });
+        smtpDelivered = true;
+      } catch (smtpErr) {
+        console.warn("[Careers API] Nodemailer dispatch failed:", smtpErr);
+      }
+    }
+
+    if (googleScriptDispatched || smtpDelivered) {
       return NextResponse.json(
         {
           success: true,
-          message: "Career application and resume delivered successfully via email.",
-        },
-        { status: 200 }
-      );
-    } else if (googleScriptDispatched) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Career application received and forwarded to recruitment system.",
+          message: googleScriptDispatched
+            ? "Career application and resume uploaded to Google Drive & recorded successfully."
+            : "Career application and resume delivered successfully via email.",
         },
         { status: 200 }
       );
     } else {
       console.error(
-        `[Durozen Careers API] SMTP credentials (SMTP_USER / SMTP_PASS) not configured in environment (.env.local). ` +
-        `Cannot deliver email for ${name} <${email}>.`
+        `[Durozen Careers API] Dispatch failed for ${name} <${email}>. Neither Google Apps Script nor SMTP could process the submission.`
       );
 
       return NextResponse.json(
         {
           success: false,
           error:
-            "Email service is not yet configured on the server. Please add SMTP_USER and SMTP_PASS (e.g. Gmail App Password) to .env.local to send emails.",
+            "Recruitment service is currently unavailable. Please try again or email your CV directly to hr@durozen.in.",
         },
         { status: 500 }
       );

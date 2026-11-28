@@ -4,11 +4,12 @@
  * 
  * Ingestion Architecture:
  * - Mode A: Web App Endpoint (doPost) for website forms (Contact + Careers)
+ *           Now with automatic Google Drive Resume File Storage & Sharing
  * - Mode B: Automated Gmail Inbound Reader (syncGmailInbound) for parsing incoming emails
  * 
  * Multi-Channel Routing:
  * - "contact" -> Appends to "Inquiries" sheet, alerts Sales/Tech leads
- * - "career"  -> Appends to "Careers" sheet, alerts Talent/HR team
+ * - "career"  -> Uploads CV to Google Drive, appends to "Careers" sheet with Drive link, alerts Talent/HR
  * 
  */
  
@@ -20,11 +21,14 @@ const CONFIG = {
   CONTACT_SHEET_NAME: "Inquiries",
   CAREERS_SHEET_NAME: "Careers",
 
-  // Routing Email Addresses (Alerts sent to both director and HR; sachin email removed)
-  ALERT_EMAILS: "director@durozen.in, hr@durozen.in", // Receives all inbound admin alerts (comma-separated)
-  ADMIN_EMAIL: "director@durozen.in",                 // General & Sales inquiries reply-to & support contact
-  CAREERS_EMAIL: "hr@durozen.in",                     // Careers & HR applications reply-to
-  SENDER_EMAIL: "director@durozen.in",                // Default sender identity
+  // Google Drive Destination for Resumes / CVs
+  RESUME_FOLDER_NAME: "Durozen Candidate Resumes",
+
+  // Routing Email Addresses
+  ALERT_EMAILS: "hr@durozen.in, soundararajanselvan2@gmail.com", // Receives all inbound admin alerts (comma-separated)
+  ADMIN_EMAIL: "hr@durozen.in",                 // General & Sales inquiries reply-to & support contact
+  CAREERS_EMAIL: "hr@durozen.in",               // Careers & HR applications reply-to
+  SENDER_EMAIL: "hr@durozen.in",                // Default sender identity
   
   // Organization Metadata
   COMPANY_NAME: "Durozen Technologies",
@@ -81,6 +85,10 @@ function doPost(e) {
     // 4. Route and Process based on type
     if (isCareer) {
       const record = normalizeCareerRecord(data, "Website Careers Form");
+      
+      // Automatically store uploaded resume into Google Drive folder
+      saveResumeToDrive(record, data);
+
       const sheet = getOrInitCareersSheet(CONFIG.CAREERS_SHEET_NAME);
       appendCareerRecord(sheet, record);
       sendCareerAdminAlert(record);
@@ -92,8 +100,9 @@ function doPost(e) {
       return createJsonResponse({
         status: "success",
         type: "career",
-        message: "Career application received and recorded successfully.",
+        message: "Career application and resume recorded successfully in Google Drive.",
         refId: record.refId,
+        resumeDriveUrl: record.resumeDriveUrl || null,
         timestamp: record.timestamp.toISOString()
       });
 
@@ -143,9 +152,64 @@ function doGet(e) {
   return createJsonResponse({
     status: "healthy",
     service: "Durozen Technologies Webhook Engine",
-    message: "Endpoint is active and accepting POST submissions for Contact and Careers.",
+    message: "Endpoint is active and accepting POST submissions for Contact and Careers with Google Drive Resume Storage.",
     timestamp: new Date().toISOString()
   });
+}
+
+// ============================================================================
+// GOOGLE DRIVE RESUME STORAGE HELPER
+// ============================================================================
+
+/**
+ * Decodes the base64 resume file from the payload, saves it into a dedicated
+ * Google Drive folder, configures view permissions, and saves the link.
+ */
+function saveResumeToDrive(record, data) {
+  // If candidate already provided a direct Google Drive or cloud link
+  if (data.resumeDriveUrl && String(data.resumeDriveUrl).startsWith("http")) {
+    record.resumeDriveUrl = data.resumeDriveUrl;
+    return;
+  }
+
+  // If base64 file data was transmitted from the website form
+  if (data.resumeBase64) {
+    try {
+      const folderName = CONFIG.RESUME_FOLDER_NAME || "Durozen Candidate Resumes";
+      let folder;
+      const folders = DriveApp.getFoldersByName(folderName);
+      if (folders.hasNext()) {
+        folder = folders.next();
+      } else {
+        folder = DriveApp.createFolder(folderName);
+      }
+
+      const decodedBytes = Utilities.base64Decode(data.resumeBase64);
+      const mimeType = data.resumeMime || "application/pdf";
+      const safeName = (record.fullName || "Candidate").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const rawFileName = data.resumeName || "Resume.pdf";
+      const fileName = `${record.refId}_${safeName}_${rawFileName}`;
+      const blob = Utilities.newBlob(decodedBytes, mimeType, fileName);
+
+      const file = folder.createFile(blob);
+      
+      // Set view permissions so anyone with the link can view without request delays
+      try {
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (shareErr) {
+        Logger.log("Drive sharing permission notice: " + shareErr.toString());
+      }
+
+      record.resumeDriveUrl = file.getUrl();
+      record.resumeBlob = blob; // Kept in memory to attach directly to admin alert email
+      Logger.log(`Resume saved to Google Drive: ${record.resumeDriveUrl}`);
+    } catch (err) {
+      Logger.log("saveResumeToDrive Error: " + err.toString());
+      record.resumeDriveUrl = "Upload error: " + err.message;
+    }
+  } else {
+    record.resumeDriveUrl = data.resumeName ? `Attached via email (${data.resumeName})` : "Not provided";
+  }
 }
 
 // ============================================================================
@@ -195,6 +259,7 @@ function syncGmailInbound() {
             email: emailAddress,
             phone: extractPhoneNumber(bodyText) || "Not provided",
             discipline: subject,
+            resumeDriveUrl: "Submitted via Direct Email",
             portfolioUrl: extractUrl(bodyText) || "N/A",
             message: bodyText.trim().substring(0, 3000),
             status: "New Candidate"
@@ -302,7 +367,7 @@ function getOrInitCareersSheet(sheetName) {
   if (sheet.getLastRow() === 0) {
     const headers = [
       "Application ID", "Timestamp", "Source", "Candidate Name", "Email",
-      "Phone", "Discipline / Role", "Portfolio / LinkedIn / GitHub", "Cover Note / Intro", "Status"
+      "Phone", "Discipline / Role", "Resume / Drive Link", "Portfolio / LinkedIn / GitHub", "Cover Note / Intro", "Status"
     ];
     sheet.appendRow(headers);
     sheet.getRange(1, 1, 1, headers.length)
@@ -328,6 +393,19 @@ function getOrInitCareersSheet(sheetName) {
         .setFontSize(11)
         .setHorizontalAlignment("center");
     }
+
+    // Gracefully upgrade existing sheet if Resume / Drive Link column is missing
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const hasResumeCol = headers.some(h => String(h).toLowerCase().includes("resume") || String(h).toLowerCase().includes("drive"));
+    if (!hasResumeCol) {
+      sheet.insertColumnBefore(8);
+      sheet.getRange(1, 8).setValue("Resume / Drive Link")
+        .setFontWeight("bold")
+        .setBackground("#1E293B")
+        .setFontColor("#FFFFFF")
+        .setFontSize(11)
+        .setHorizontalAlignment("center");
+    }
   }
   return sheet;
 }
@@ -341,13 +419,14 @@ function appendCareerRecord(sheet, r) {
     r.email,
     r.phone,
     r.discipline,
+    r.resumeDriveUrl || "Not provided",
     r.portfolioUrl,
     r.message,
     r.status || "New Candidate"
   ]);
   const lastRow = sheet.getLastRow();
   sheet.getRange(lastRow, 1, 1, 3).setHorizontalAlignment("center");
-  sheet.getRange(lastRow, 10, 1, 1).setHorizontalAlignment("center");
+  sheet.getRange(lastRow, 11, 1, 1).setHorizontalAlignment("center");
 }
 
 // ============================================================================
@@ -371,23 +450,18 @@ function sendContactAdminAlert(r) {
     <title>${escapeHtml(subject)}</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #F4F3EE; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-    <!-- Hidden Preview Text -->
     <div style="display: none; font-size: 1px; color: #FAF9F6; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
       ${escapeHtml(previewText)}
     </div>
 
-    <!-- Main Container -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F4F3EE; padding: 32px 12px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 620px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E5E4DE; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
-            
-            <!-- 4-Color Brand Stripe -->
             <tr>
               <td style="height: 5px; background: linear-gradient(90deg, #DE2F28 0%, #F4A81E 33%, #549B31 66%, #24419E 100%); line-height: 5px; font-size: 1px;">&nbsp;</td>
             </tr>
 
-            <!-- Header -->
             <tr>
               <td style="background-color: #121316; padding: 28px 32px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -410,11 +484,8 @@ function sendContactAdminAlert(r) {
               </td>
             </tr>
 
-            <!-- Body Content -->
             <tr>
               <td style="padding: 32px 32px 24px 32px;">
-                
-                <!-- Headline Card -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
                   <tr>
                     <td>
@@ -431,7 +502,6 @@ function sendContactAdminAlert(r) {
                   </tr>
                 </table>
 
-                <!-- Structured Key-Value Specification Grid -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate; border-spacing: 0; border: 1px solid #ECEBE6; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
                   <tr style="background-color: #FAF9F6;">
                     <td width="34%" style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em;">
@@ -503,7 +573,6 @@ function sendContactAdminAlert(r) {
                   </tr>
                 </table>
 
-                <!-- Message / Project Scope Card -->
                 <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #121316; letter-spacing: 0.1em; margin-bottom: 8px;">
                   Project Brief &amp; Problem Statement:
                 </div>
@@ -513,7 +582,6 @@ function sendContactAdminAlert(r) {
                   </tr>
                 </table>
 
-                <!-- Primary Action CTA -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 12px;">
                   <tr>
                     <td align="center">
@@ -527,7 +595,6 @@ function sendContactAdminAlert(r) {
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background-color: #FAF9F6; padding: 24px 32px; border-top: 1px solid #ECEBE6; text-align: center;">
                 <div style="font-size: 12px; font-weight: 700; color: #121316; margin-bottom: 4px;">
@@ -574,23 +641,18 @@ function sendContactClientReceipt(r) {
     <title>${escapeHtml(subject)}</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #F4F3EE; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-    <!-- Hidden Preview Text -->
     <div style="display: none; font-size: 1px; color: #FAF9F6; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
       ${escapeHtml(previewText)}
     </div>
 
-    <!-- Main Container -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F4F3EE; padding: 32px 12px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E5E4DE; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
-            
-            <!-- 4-Color Brand Stripe -->
             <tr>
               <td style="height: 5px; background: linear-gradient(90deg, #DE2F28 0%, #F4A81E 33%, #549B31 66%, #24419E 100%); line-height: 5px; font-size: 1px;">&nbsp;</td>
             </tr>
 
-            <!-- Header -->
             <tr>
               <td style="background-color: #121316; padding: 28px 32px;">
                 <div style="font-size: 20px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em;">
@@ -602,7 +664,6 @@ function sendContactClientReceipt(r) {
               </td>
             </tr>
 
-            <!-- Body -->
             <tr>
               <td style="padding: 32px 32px 24px 32px;">
                 <div style="display: inline-block; padding: 4px 12px; background-color: #F0F7ED; border: 1px solid #D1E7CA; border-radius: 20px; font-size: 10px; font-weight: 800; color: #3E7923; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">
@@ -617,7 +678,6 @@ function sendContactClientReceipt(r) {
                   Thank you for reaching out to <strong>Durozen Technologies</strong> regarding <strong>${escapeHtml(r.service)}</strong>. Your request has been securely logged into our client delivery pipeline.
                 </p>
 
-                <!-- Summary Receipt Card -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF9F6; border: 1px solid #ECEBE6; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
                   <tr>
                     <td style="padding: 16px 20px;">
@@ -642,7 +702,6 @@ function sendContactClientReceipt(r) {
                   </tr>
                 </table>
 
-                <!-- 3-Step Next Steps Flow -->
                 <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #121316; letter-spacing: 0.08em; margin-bottom: 12px;">
                   What Happens Next:
                 </div>
@@ -691,7 +750,6 @@ function sendContactClientReceipt(r) {
                   </tr>
                 </table>
 
-                <!-- Immediate Assistance Box -->
                 <div style="padding: 16px; background-color: #FAF9F6; border-radius: 10px; border: 1px dashed #D6D5CF; font-size: 12px; color: #666664; line-height: 1.5;">
                   Need immediate support? Contact our technical advisory team directly at <a href="mailto:${CONFIG.ADMIN_EMAIL}" style="color: #24419E; font-weight: 700; text-decoration: none;">${CONFIG.ADMIN_EMAIL}</a> or call <a href="tel:${CONFIG.SUPPORT_PHONE}" style="color: #121316; font-weight: 700; text-decoration: none;">${CONFIG.SUPPORT_PHONE}</a>.
                 </div>
@@ -704,7 +762,6 @@ function sendContactClientReceipt(r) {
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background-color: #FAF9F6; padding: 24px 32px; border-top: 1px solid #ECEBE6; text-align: center;">
                 <div style="font-size: 11px; color: #777775; line-height: 1.5;">
@@ -748,23 +805,18 @@ function sendCareerAdminAlert(r) {
     <title>${escapeHtml(subject)}</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #F4F3EE; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-    <!-- Hidden Preview Text -->
     <div style="display: none; font-size: 1px; color: #FAF9F6; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
       ${escapeHtml(previewText)}
     </div>
 
-    <!-- Main Container -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F4F3EE; padding: 32px 12px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 620px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E5E4DE; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
-            
-            <!-- 4-Color Brand Stripe -->
             <tr>
               <td style="height: 5px; background: linear-gradient(90deg, #F4A81E 0%, #DE2F28 50%, #24419E 100%); line-height: 5px; font-size: 1px;">&nbsp;</td>
             </tr>
 
-            <!-- Header -->
             <tr>
               <td style="background-color: #121316; padding: 28px 32px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -787,10 +839,8 @@ function sendCareerAdminAlert(r) {
               </td>
             </tr>
 
-            <!-- Body Content -->
             <tr>
               <td style="padding: 32px 32px 24px 32px;">
-                
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
                   <tr>
                     <td>
@@ -801,13 +851,12 @@ function sendCareerAdminAlert(r) {
                         Candidate Application Received
                       </h1>
                       <p style="font-size: 13px; color: #666664; margin: 0; line-height: 1.6;">
-                        A candidate has submitted their profile and engineering credentials. Review their portfolio and track record below.
+                        A candidate has submitted their profile and credentials. The resume has been archived to Google Drive.
                       </p>
                     </td>
                   </tr>
                 </table>
 
-                <!-- Candidate Grid -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate; border-spacing: 0; border: 1px solid #ECEBE6; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
                   <tr style="background-color: #FAF9F6;">
                     <td width="34%" style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em;">
@@ -851,16 +900,29 @@ function sendCareerAdminAlert(r) {
                       </span>
                     </td>
                   </tr>
+
+                  <!-- RESUME / GOOGLE DRIVE LINK ROW -->
                   <tr style="background-color: #FAF9F6;">
                     <td style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em;">
+                      Resume / CV Document
+                    </td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 13px; font-weight: 700;">
+                      ${r.resumeDriveUrl && String(r.resumeDriveUrl).startsWith("http")
+                        ? `<a href="${r.resumeDriveUrl}" target="_blank" style="color: #24419E; text-decoration: underline; font-weight: 700;">📄 View Resume in Google Drive &rarr;</a>`
+                        : `<span style="color: #888888; font-weight: 500;">${escapeHtml(r.resumeDriveUrl || "Not attached")}</span>`}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em; background-color: #FAF9F6;">
                       Portfolio / Profiles
                     </td>
                     <td style="padding: 12px 16px; border-bottom: 1px solid #ECEBE6; font-size: 13px; font-weight: 600;">
                       ${r.portfolioUrl && r.portfolioUrl !== "N/A" ? '<a href="' + r.portfolioUrl + '" target="_blank" style="color: #24419E; text-decoration: none; font-weight: 700;">' + escapeHtml(r.portfolioUrl) + ' &rarr;</a>' : '<span style="color: #999;">Not provided</span>'}
                     </td>
                   </tr>
-                  <tr>
-                    <td style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em; background-color: #FAF9F6;">
+                  <tr style="background-color: #FAF9F6;">
+                    <td style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #666664; text-transform: uppercase; letter-spacing: 0.06em;">
                       Applied Date
                     </td>
                     <td style="padding: 12px 16px; font-size: 12px; font-weight: 600; color: #555553;">
@@ -869,7 +931,6 @@ function sendCareerAdminAlert(r) {
                   </tr>
                 </table>
 
-                <!-- Note / Introduction Box -->
                 <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #121316; letter-spacing: 0.1em; margin-bottom: 8px;">
                   Candidate Introduction &amp; Systems Built:
                 </div>
@@ -879,14 +940,18 @@ function sendCareerAdminAlert(r) {
                   </tr>
                 </table>
 
-                <!-- Action CTAs -->
+                <!-- Action CTAs: Direct Email + Direct Google Drive Document View -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 12px;">
                   <tr>
                     <td align="center">
-                      <a href="mailto:${r.email}?subject=Durozen%20Careers%20-%20Interview%20Next%20Steps%20for%20${encodeURIComponent(r.discipline)}" style="display: inline-block; background-color: #121316; color: #FFFFFF !important; padding: 13px 30px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-decoration: none; margin-right: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
+                      ${r.resumeDriveUrl && String(r.resumeDriveUrl).startsWith("http") ? `
+                      <a href="${r.resumeDriveUrl}" target="_blank" style="display: inline-block; background-color: #24419E; color: #FFFFFF !important; padding: 13px 26px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-decoration: none; margin-right: 10px; box-shadow: 0 4px 14px rgba(36, 65, 158, 0.25);">
+                        📄 Open Resume in Drive &rarr;
+                      </a>` : ''}
+                      <a href="mailto:${r.email}?subject=Durozen%20Careers%20-%20Interview%20Next%20Steps%20for%20${encodeURIComponent(r.discipline)}" style="display: inline-block; background-color: #121316; color: #FFFFFF !important; padding: 13px 26px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-decoration: none; margin-right: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
                         Contact Candidate &rarr;
                       </a>
-                      ${r.portfolioUrl && r.portfolioUrl !== "N/A" ? '<a href="' + r.portfolioUrl + '" target="_blank" style="display: inline-block; background-color: #F4A81E; color: #FFFFFF !important; padding: 13px 26px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(244, 168, 30, 0.25);">Open Portfolio</a>' : ''}
+                      ${r.portfolioUrl && r.portfolioUrl !== "N/A" ? '<a href="' + r.portfolioUrl + '" target="_blank" style="display: inline-block; background-color: #F4A81E; color: #FFFFFF !important; padding: 13px 26px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(244, 168, 30, 0.25);">Portfolio</a>' : ''}
                     </td>
                   </tr>
                 </table>
@@ -894,7 +959,6 @@ function sendCareerAdminAlert(r) {
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background-color: #FAF9F6; padding: 24px 32px; border-top: 1px solid #ECEBE6; text-align: center;">
                 <div style="font-size: 12px; font-weight: 700; color: #121316; margin-bottom: 4px;">
@@ -914,13 +978,20 @@ function sendCareerAdminAlert(r) {
   </html>
   `;
 
-  MailApp.sendEmail({
+  const emailOptions = {
     to: CONFIG.ALERT_EMAILS,
     subject: subject,
     htmlBody: htmlBody,
     name: CONFIG.COMPANY_NAME,
     replyTo: isValidEmail(r.email) ? r.email : CONFIG.CAREERS_EMAIL
-  });
+  };
+
+  // If file blob was saved in Drive, also attach it directly to the email for immediate viewing
+  if (r.resumeBlob) {
+    emailOptions.attachments = [r.resumeBlob];
+  }
+
+  MailApp.sendEmail(emailOptions);
 }
 
 /**
@@ -940,23 +1011,18 @@ function sendCareerClientReceipt(r) {
     <title>${escapeHtml(subject)}</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #F4F3EE; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-    <!-- Hidden Preview Text -->
     <div style="display: none; font-size: 1px; color: #FAF9F6; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
       ${escapeHtml(previewText)}
     </div>
 
-    <!-- Main Container -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #F4F3EE; padding: 32px 12px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E5E4DE; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
-            
-            <!-- 4-Color Brand Stripe -->
             <tr>
               <td style="height: 5px; background: linear-gradient(90deg, #F4A81E 0%, #DE2F28 50%, #24419E 100%); line-height: 5px; font-size: 1px;">&nbsp;</td>
             </tr>
 
-            <!-- Header -->
             <tr>
               <td style="background-color: #121316; padding: 28px 32px;">
                 <div style="font-size: 20px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em;">
@@ -968,7 +1034,6 @@ function sendCareerClientReceipt(r) {
               </td>
             </tr>
 
-            <!-- Body -->
             <tr>
               <td style="padding: 32px 32px 24px 32px;">
                 <div style="display: inline-block; padding: 4px 12px; background-color: #FEF8EC; border: 1px solid #FBE7BF; border-radius: 20px; font-size: 10px; font-weight: 800; color: #C27D05; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;">
@@ -984,10 +1049,9 @@ function sendCareerClientReceipt(r) {
                 </p>
 
                 <p style="font-size: 14px; color: #4B4C4A; line-height: 1.65; margin: 0 0 20px 0;">
-                  Our engineering leadership values craftsmanship, architectural rigor, and problem-solving velocity over boilerplate solutions. We treat candidate evaluations seriously and examine source contributions, architecture decisions, and portfolio work closely.
+                  Your resume document and application have been securely received and recorded into our recruitment pipeline. Our engineering leadership values craftsmanship, architectural rigor, and problem-solving velocity over boilerplate solutions.
                 </p>
 
-                <!-- Application Summary Card -->
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF9F6; border: 1px solid #ECEBE6; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
                   <tr>
                     <td style="padding: 16px 20px;">
@@ -1012,7 +1076,6 @@ function sendCareerClientReceipt(r) {
                   </tr>
                 </table>
 
-                <!-- Evaluation Process Timeline -->
                 <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #121316; letter-spacing: 0.08em; margin-bottom: 12px;">
                   Our Interview &amp; Evaluation Philosophy:
                 </div>
@@ -1073,7 +1136,6 @@ function sendCareerClientReceipt(r) {
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background-color: #FAF9F6; padding: 24px 32px; border-top: 1px solid #ECEBE6; text-align: center;">
                 <div style="font-size: 11px; color: #777775; line-height: 1.5;">
@@ -1122,8 +1184,7 @@ function detectIfCareerSubmission(d) {
   if (d.type === "career" || d.formType === "career" || d.submissionType === "career") {
     return true;
   }
-  // Detect presence of career-specific attributes
-  if (d.discipline || d.portfolioUrl || d.resume || d.github || d.linkedin) {
+  if (d.discipline || d.portfolioUrl || d.resume || d.resumeBase64 || d.resumeDriveUrl || d.github || d.linkedin) {
     return true;
   }
   return false;
@@ -1162,6 +1223,7 @@ function normalizeCareerRecord(d, source) {
     discipline: discipline,
     portfolioUrl: d.portfolioUrl || d.portfolio || d.linkedin || d.github || "N/A",
     message: d.message || d.note || "No note provided.",
+    resumeDriveUrl: d.resumeDriveUrl || null,
     status: "New Candidate"
   };
 }
