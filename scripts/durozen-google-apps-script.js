@@ -53,11 +53,17 @@ const CONFIG = {
 // ============================================================================
 /**
  * Run this function once directly inside the Apps Script editor (select 'authorizeDrive' and click 'Run').
- * This triggers Google's authorization popup to grant Google Drive storage access.
+ * This explicitly requests full write permissions (https://www.googleapis.com/auth/drive).
  */
 function authorizeDrive() {
-  const root = DriveApp.getRootFolder();
-  Logger.log("DriveApp successfully authorized! Root folder: " + root.getName());
+  // Explicitly exercise createFolder, createFile, and setSharing so Google grants full drive permissions
+  const testFolder = DriveApp.createFolder("_Durozen_Permission_Check_");
+  const testFile = testFolder.createFile("test.txt", "Permissions active");
+  testFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  
+  // Clean up temporary test folder immediately
+  testFolder.setTrashed(true);
+  Logger.log("SUCCESS: Full Google Drive upload and sharing permissions are now granted!");
 }
 
 // ============================================================================
